@@ -15,7 +15,7 @@ sumbitLoginbutton.addEventListener("click", function () {
         sumbitLoginbutton.innerText = "LOGIN...";
         // sumbitLoginbutton.disabled = true;
         setTimeout(function () {
-            window.location.href = "../mainpage/index.html";
+            window.location.href = "./mainpage/index.html";
         }, 800);
     } 
     else {
