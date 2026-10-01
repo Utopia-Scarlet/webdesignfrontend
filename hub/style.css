@@ -1,0 +1,2520 @@
+/* ==========================================================================
+   LoveStory — Main Hub / Our Space  (V4)
+
+   DARK EDITORIAL ARCHIVE.
+
+   Every colour lives in the variable block below, so this theme can be
+   swapped back to a light one without touching a single selector.
+
+     layer 0  ambient zones — enormous, almost invisible pools of light
+     layer 1  fixed chrome — brand, year filter, menu
+     layer 2  the five modules
+     layer 2  contextual link — only while a Timeline event is active
+     layer 3  the world — the interactive globe, opened from Our World
+
+   There is no permanent line joining the modules. The relationship between
+   them is expressed through data: point at a Timeline event that has a place
+   and Our World answers.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Theme
+   -------------------------------------------------------------------------- */
+.hub-page{
+    /* Surfaces — the palette itself lives in tokens.css, so the Entrance
+       and the Hub can never drift apart. */
+    --bg:var(--archive-bg);
+    --surface:var(--archive-surface);
+    --surface-soft:var(--archive-surface-soft);
+    --photo-frame:var(--archive-photo-frame);
+
+    /* Type */
+    --text:var(--archive-text);
+    --muted:var(--archive-muted);
+    --muted-dim:var(--archive-muted-dim);
+
+    /* Accent — low-saturation champagne, never bright */
+    --gold:var(--archive-gold);
+    --gold-bright:var(--archive-gold-bright);
+    --gold-dark:var(--archive-gold-dark);
+
+    /* Structure */
+    --line:var(--archive-line);
+    --line-weak:var(--archive-line-weak);
+    --line-gold:var(--archive-line-gold);
+    --timeline-line:rgba(232,227,216,.18);
+    --node-idle:#687078;
+
+    background:var(--bg);
+    color:var(--text);
+    min-height:100svh;
+    overflow-x:hidden;
+}
+
+body.hub-page .grain{
+    opacity:.022;
+}
+
+.sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip-path:inset(50%);
+    white-space:nowrap;
+    border:0;
+}
+
+.hub{
+    position:relative;
+    min-height:100svh;
+    animation:hub-bg-in .7s var(--ease-out) both;
+}
+
+@keyframes hub-bg-in{
+    from{ opacity:0; }
+    to{ opacity:1; }
+}
+
+/* --------------------------------------------------------------------------
+   Ambient zones
+   Not shapes and not decoration: they keep a large dark page from reading as
+   a flat black rectangle.
+   -------------------------------------------------------------------------- */
+.ambient{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
+    pointer-events:none;
+}
+
+.ambient__zone{
+    position:absolute;
+    display:block;
+    border-radius:50%;
+    will-change:transform;
+}
+
+.ambient{
+    transform:translate3d(calc(var(--px, 0px) * 1.4), calc(var(--py, 0px) * 1.4), 0);
+    transition:transform .6s var(--ease-out);
+}
+
+.ambient__zone--moments{
+    left:1%;
+    top:4%;
+    width:min(72vw, 780px);
+    aspect-ratio:1;
+    background:radial-gradient(circle at 50% 50%,
+        rgba(92,104,112,.035) 0%,
+        rgba(92,104,112,0) 68%);
+    animation:ambient-a 28s ease-in-out infinite alternate;
+}
+
+.ambient__zone--world{
+    left:26%;
+    top:26%;
+    width:min(80vw, 840px);
+    aspect-ratio:1;
+    background:radial-gradient(circle at 50% 50%,
+        rgba(183,154,98,.045) 0%,
+        rgba(183,154,98,0) 66%);
+    animation:ambient-b 34s ease-in-out infinite alternate;
+}
+
+.ambient__zone--timeline{
+    right:-6%;
+    top:2%;
+    width:min(64vw, 720px);
+    aspect-ratio:1;
+    background:radial-gradient(circle at 50% 50%,
+        rgba(183,154,98,.02) 0%,
+        rgba(183,154,98,0) 66%);
+    animation:ambient-c 24s ease-in-out infinite alternate;
+}
+
+@keyframes ambient-a{
+    from{ transform:translate3d(0, 0, 0) scale(1); }
+    to  { transform:translate3d(11px, -9px, 0) scale(1.03); }
+}
+
+@keyframes ambient-b{
+    from{ transform:translate3d(0, 0, 0) scale(1); }
+    to  { transform:translate3d(-8px, 7px, 0) scale(1.025); }
+}
+
+@keyframes ambient-c{
+    from{ transform:translate3d(0, 0, 0) scale(1); }
+    to  { transform:translate3d(-12px, -6px, 0) scale(1.02); }
+}
+
+/* --------------------------------------------------------------------------
+   Fixed chrome
+   -------------------------------------------------------------------------- */
+.hub__chrome{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:30;
+
+    display:grid;
+    /* minmax(0, …) rather than 1fr: a bare 1fr track is at least as wide as its
+       content, so a long name on one side and a short one on the other would
+       push the year filter off centre. With a zero minimum both side tracks
+       take an equal share and the middle is centred on the page itself. */
+    grid-template-columns:minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items:center;
+
+    padding:clamp(28px, 3.4vh, 40px) clamp(1rem, 3vw, 2.4rem) 0;
+    pointer-events:none;
+    transition:opacity .5s var(--ease-out);
+}
+
+.hub__chrome > *{ pointer-events:auto; }
+
+body.world-open .hub__chrome{ opacity:0; pointer-events:none; }
+
+.hub__brand{
+    justify-self:start;
+    white-space:nowrap;
+    font-family:var(--sans);
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:.4em;
+    text-transform:uppercase;
+    color:var(--text);
+    animation:hub-in .7s var(--ease-out) .1s both;
+}
+
+.hub__years{
+    justify-self:center;
+    display:flex;
+    gap:clamp(28px, 3vw, 40px);
+    white-space:nowrap;
+    animation:hub-in .7s var(--ease-out) .18s both;
+}
+
+/* The right-hand group: the account and the menu, one thing rather than two.
+   The header has exactly three children, and this is the third — which is what
+   keeps the menu on the same line as everything else however many years the
+   archive grows to. */
+.hub__actions{
+    justify-self:end;
+    display:flex;
+    align-items:center;
+    gap:clamp(18px, 2vw, 30px);
+    white-space:nowrap;
+    animation:hub-in .7s var(--ease-out) .1s both;
+}
+
+.hub__year{
+    appearance:none;
+    margin:0;
+    padding:0 0 7px;
+
+    border:0;
+    border-bottom:1px solid transparent;
+    background:none;
+    color:var(--muted);
+
+    font-family:var(--sans);
+    font-size:clamp(12px, 1.05vw, 14px);
+    letter-spacing:.16em;
+    cursor:pointer;
+
+    opacity:.6;
+    transition:opacity .4s var(--ease-out), border-color .4s var(--ease-out),
+               color .4s var(--ease-out);
+}
+
+.hub__year:hover{ opacity:.9; color:var(--text); }
+
+/* The one place gold is allowed to lead. */
+.hub__year[aria-pressed="true"]{
+    opacity:1;
+    color:var(--gold-bright);
+    border-bottom-color:var(--gold);
+}
+
+.hub__year:focus-visible{
+    outline:1px solid var(--gold);
+    outline-offset:4px;
+}
+
+/* MENU ≡ — words and a glyph, and nothing drawn around them. It used to carry
+   a bottom border that read as a box, and it inherited the page-wide peach
+   focus ring, which stayed lit after a mouse click because closing the menu
+   returns focus here. Neither is a state worth showing. */
+.hub__menu-button{
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+
+    appearance:none;
+    margin:0;
+    padding:.35rem 0;
+    border:0;
+    background:none;
+    color:var(--muted);
+
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    cursor:pointer;
+
+    transition:color .35s var(--ease-out);
+}
+
+.hub__menu-button:hover{ color:var(--gold-bright); }
+
+/* While the menu is open it stays lit, so the trigger still says what it did. */
+.hub__menu-button[aria-expanded="true"]{ color:var(--gold-bright); }
+
+/* A keyboard visitor gets a ring, in the archive's gold rather than the page
+   accent — and only a keyboard visitor. */
+.hub__menu-button:focus-visible,
+.hub__account:focus-visible{
+    outline:1px solid var(--gold);
+    outline-offset:6px;
+}
+
+/* Closing the menu with a mouse hands focus back to this button, and a
+   programmatic focus looks like a keyboard one to the browser. Suppressed for
+   that one gesture only, so the ring still appears when somebody tabs here. */
+.hub__menu-button.is-quiet-focus:focus-visible,
+.hub__account.is-quiet-focus:focus-visible{ outline:none; }
+
+.hub__menu-icon{ font-size:12px; line-height:1; }
+
+/* --------------------------------------------------------------------------
+   The memory space
+   -------------------------------------------------------------------------- */
+.hub__space{
+    position:relative;
+    min-height:100svh;
+    padding:0;
+    transition:opacity .5s var(--ease-out);
+}
+
+/* One bounded room for the five elements. On a very wide screen this is what
+   keeps them a space rather than five things in five separate corners. */
+.main-hub-stage{
+    position:relative;
+    box-sizing:border-box;
+    width:min(92vw, 1480px);
+    min-height:100svh;
+    margin:0 auto;
+    padding:clamp(110px, 16vh, 170px) 0 clamp(50px, 9vh, 100px);
+    transform:translate3d(calc(var(--px, 0px) * .35), calc(var(--py, 0px) * .35), 0);
+    transition:transform .6s var(--ease-out);
+}
+
+body.world-open .hub__space{ opacity:0; pointer-events:none; }
+
+/* --------------------------------------------------------------------------
+   Contextual link
+   -------------------------------------------------------------------------- */
+.link{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity .45s var(--ease-out);
+}
+
+.link.is-visible{ opacity:1; }
+
+.link__path{
+    fill:none;
+    stroke:rgba(200,173,117,.18);
+    stroke-width:1;
+    stroke-linecap:round;
+}
+
+/* --------------------------------------------------------------------------
+   Module base
+   -------------------------------------------------------------------------- */
+.module{
+    position:absolute;
+    z-index:1;
+    display:block;
+    color:inherit;
+    animation:hub-in .75s var(--ease-out) var(--in-delay, 0s) both;
+}
+
+.module__inner{
+    --amp-x:var(--fx, 0px);
+    --amp-y:var(--fy, 2px);
+
+    position:relative;
+    display:block;
+    transform:translate3d(0, 0, 0);
+    animation:var(--float-name, float-y) var(--float-dur, 11s) ease-in-out infinite alternate;
+    animation-delay:calc(var(--in-delay, 0s) + .8s);
+}
+
+@keyframes hub-in{
+    from{ opacity:0; transform:translateY(12px); }
+    to  { opacity:1; transform:none; }
+}
+
+@keyframes float-y{
+    from{ transform:translate3d(0, calc(var(--amp-y) * -1), 0); }
+    to  { transform:translate3d(0, var(--amp-y), 0); }
+}
+
+@keyframes float-xy{
+    from{ transform:translate3d(calc(var(--amp-x) * -1), calc(var(--amp-y) * -1), 0); }
+    to  { transform:translate3d(var(--amp-x), var(--amp-y), 0); }
+}
+
+/* Text stays still while it is being read. */
+.module:hover .module__inner,
+.module:focus-within .module__inner{
+    animation-play-state:paused;
+}
+
+.module__head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:1rem;
+    margin-bottom:.9rem;
+}
+
+.module__title{
+    margin:0;
+    font-family:var(--sans);
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    color:var(--text);
+    transition:color .4s var(--ease-out);
+}
+
+.module__meta{
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+    white-space:nowrap;
+}
+
+.module__eyebrow{
+    display:block;
+    margin-bottom:.5rem;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--muted);
+}
+
+/* The whole Moments module is one destination, so it is one link. Nothing
+   about the existing layout or hover changes: this only makes the link behave
+   like a block and inherit the module's own colours instead of a browser
+   default blue underline. */
+.module__link{
+    display:block;
+    color:inherit;
+    text-decoration:none;
+}
+
+.module__link:focus-visible{
+    outline:1px solid rgba(200,173,117,.45);
+    outline-offset:8px;
+}
+
+.module__foot{
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    margin-top:1.1rem;
+
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-decoration:none;
+}
+
+.module__function{ position:relative; }
+
+.module__function::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:-3px;
+    height:1px;
+    background:currentColor;
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .45s var(--ease-out);
+}
+
+.module__arrow{ transition:transform .45s var(--ease-out); }
+
+.module__foot:hover .module__function::after,
+.module__foot:focus-visible .module__function::after{ transform:scaleX(1); }
+
+.module__foot:hover .module__arrow,
+.module__foot:focus-visible .module__arrow{ transform:translateX(5px); }
+
+/* --------------------------------------------------------------------------
+   Placement — Our World holds the middle, the other four orbit it
+   -------------------------------------------------------------------------- */
+.module--moments{
+    left:8%;
+    top:13%;
+    width:clamp(210px, 21vw, 280px);
+}
+
+.module--timeline{
+    right:7%;
+    top:10%;
+    width:clamp(340px, 38vw, 560px);
+}
+
+/* The anchor: centred, a little above the middle line, so the other four
+   read as an orbit rather than four corners. */
+.module--map{
+    left:50%;
+    top:56%;
+    translate:-50% -50%;
+    width:clamp(300px, 30vw, 440px);
+}
+
+.module--future{
+    left:10%;
+    bottom:7%;
+    width:clamp(200px, 19vw, 260px);
+}
+
+.module--countdown{
+    right:9%;
+    bottom:9%;
+    width:clamp(210px, 21vw, 280px);
+}
+
+.module--map .module__inner{ --fy:2px; }
+.module--timeline .module__inner{ --fy:1px; }
+.module--moments .module__inner{ --fy:2px; }
+.module--future .module__inner{ --float-name:float-xy; --fx:1px; --fy:2px; }
+.module--countdown .module__inner{ --fy:1px; }
+
+/* --------------------------------------------------------------------------
+   1. MOMENTS
+   A fixed stack that opens when you reach for it. Depth never changes except
+   for the one photograph under the pointer, and nothing is ever made
+   transparent — depth is done with brightness, so photographs never show
+   through each other.
+   -------------------------------------------------------------------------- */
+.stack{
+    position:relative;
+    display:block;
+    height:clamp(126px, 14vh, 174px);
+    transform:translate3d(calc(var(--px, 0px) * -.6), calc(var(--py, 0px) * -.6), 0);
+    transition:transform .6s var(--ease-out);
+}
+
+.stack__photo{
+    position:absolute;
+    left:0;
+    top:0;
+
+    display:block;
+    width:clamp(98px, 10vw, 130px);
+    aspect-ratio:4 / 5;
+    overflow:hidden;
+
+    border:3px solid var(--photo-frame);
+    box-shadow:0 18px 45px rgba(0,0,0,.35);
+    cursor:pointer;
+    opacity:1;
+
+    transform:translateX(var(--ox, 0%)) rotate(var(--rot, 0deg));
+    animation:stack-idle var(--idle-dur, 12s) ease-in-out var(--idle-delay, 0s) infinite alternate;
+    transition:transform .58s cubic-bezier(.22, 1, .36, 1),
+               box-shadow .5s var(--ease-out),
+               border-color .5s var(--ease-out);
+}
+
+/* Layer 1 — deepest: the alpaca. Layer 2 — middle: the person.
+   Layer 3 — on top: the beach. Fixed, never recomputed. */
+.stack__photo:nth-child(1){
+    --ox:32%; --rot:-1.4deg; --open:40%;  --rot-open:2deg;
+    --idle-dur:12s; --idle-delay:0s;      z-index:1;
+}
+.stack__photo:nth-child(2){
+    --ox:16%; --rot:.6deg;  --open:0%;    --rot-open:0deg;
+    --idle-dur:14s; --idle-delay:-4.5s;   z-index:2;
+}
+.stack__photo:nth-child(3){
+    --ox:0%;  --rot:-.5deg; --open:-40%;  --rot-open:-2deg;
+    --idle-dur:16s; --idle-delay:-8s;     z-index:3;
+}
+
+/* One photograph is not a stack. There is nothing to fan and nothing to lean
+   against, so it is shown straight and centred instead of propped up at an
+   angle like the top of a pile that is not there. */
+.stack__photo:only-child{
+    --ox:0%; --rot:0deg; --open:0%; --rot-open:0deg;
+    --idle-dur:18s; --idle-delay:-2s;
+
+    left:50%;
+    margin-left:calc(clamp(98px, 10vw, 130px) / -2);
+    z-index:1;
+}
+
+/* Barely there: you should only notice it after watching for a while. */
+@keyframes stack-idle{
+    from{ translate:0 0; rotate:0deg; }
+    to  { translate:0 -3px; rotate:.3deg; }
+}
+
+.stack__photo img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+
+    /* A dark photo archive: the colour is still there, just asleep. Never
+       transparency — that is what made photographs show through each other. */
+    filter:saturate(.52) brightness(.72) contrast(.95);
+    transition:filter .55s var(--ease-out);
+}
+
+/* Open — roughly 40% of each photograph's own width, either way. */
+.module--moments:hover .stack__photo,
+.module--moments.is-expanded .stack__photo{
+    animation-play-state:paused;
+    transform:translateX(calc(var(--ox, 0%) + var(--open, 0%)))
+              rotate(var(--rot-open, 0deg));
+}
+
+.module--moments:hover .stack__photo img,
+.module--moments.is-expanded .stack__photo img{
+    filter:saturate(.6) brightness(.8) contrast(.96);
+}
+
+/* Only the photograph actually under the pointer steps forward. The others
+   keep full opacity and simply lose a little light. */
+.module--moments .stack__photo:hover,
+.module--moments .stack__photo:focus-visible{
+    z-index:20;
+    scale:1.035;
+    border-color:rgba(200,173,117,.28);
+    box-shadow:0 26px 60px rgba(0,0,0,.4);
+}
+
+/* The one being reached for wakes up; the others only lose light. */
+.module--moments .stack__photo:hover img,
+.module--moments .stack__photo:focus-visible img{
+    filter:saturate(.95) brightness(.96) contrast(1);
+}
+
+.module--moments:has(.stack__photo:hover) .stack__photo:not(:hover) img{
+    filter:saturate(.4) brightness(.65) contrast(.95);
+}
+
+.stack__photo:focus-visible{
+    outline:1px solid var(--gold);
+    outline-offset:4px;
+}
+
+.stack__empty{
+    position:absolute;
+    left:0;
+    top:0;
+    width:clamp(98px, 10vw, 130px);
+    aspect-ratio:4 / 5;
+    border:1px solid var(--line);
+}
+
+/* --------------------------------------------------------------------------
+   2. TIMELINE
+   The whole span between two events is a zone you can point at. Aiming at a
+   9px dot is not required of anyone.
+   -------------------------------------------------------------------------- */
+.module--timeline:hover .module__title{ color:var(--gold-bright); }
+
+.timeline{
+    position:relative;
+    display:block;
+    height:96px;
+
+    transform:scale(1);
+    transform-origin:50% 50%;
+    transition:transform .4s var(--ease-out);
+}
+
+.module--timeline:hover .timeline{ transform:scale(1.015); }
+
+.timeline__curve{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:visible;
+}
+
+.timeline__curve-path{
+    fill:none;
+    stroke:var(--timeline-line);
+    stroke-width:1;
+    transition:stroke .4s var(--ease-out);
+}
+
+.module--timeline:hover .timeline__curve-path{
+    stroke:rgba(232,227,216,.24);
+}
+
+/* The interaction zones. Full height, split at the midpoints between events. */
+.timeline__zones{
+    position:absolute;
+    inset:0;
+    z-index:1;
+}
+
+.timeline__zone{
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:var(--from, 0%);
+    width:var(--width, 100%);
+    cursor:pointer;
+}
+
+.timeline__nodes{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+}
+
+.timeline__node{
+    position:absolute;
+    left:var(--x, 50%);
+    top:var(--y, 50%);
+    width:44px;
+    height:44px;
+    margin:-22px 0 0 -22px;
+}
+
+/* The button is the accessible control; it stays clickable above the zone. */
+.timeline__hit{
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    pointer-events:auto;
+
+    appearance:none;
+    padding:0;
+    border:0;
+    background:none;
+    cursor:pointer;
+}
+
+.timeline__hit:focus-visible{
+    outline:1px solid var(--gold);
+    outline-offset:-5px;
+    border-radius:50%;
+}
+
+.timeline__dot{
+    display:block;
+    width:10px;
+    height:10px;
+    border:1px solid var(--node-idle);
+    border-radius:50%;
+    background:var(--bg);
+    pointer-events:none;
+    transition:transform .35s var(--ease-out),
+               background-color .35s var(--ease-out),
+               border-color .35s var(--ease-out);
+}
+
+.timeline__node--filled .timeline__dot{ background:var(--node-idle); }
+
+/* An anniversary is a milestone by definition, so its marker is a double ring
+   in the archive gold rather than the plain dot a memory wears:  ●  becomes
+   ●  inside a ring, or ◎. No hearts, no colour, no celebration — the
+   difference is a ring and a warmer metal, nothing more. */
+.timeline__node--anniversary .timeline__dot{
+    position:relative;
+    width:13px;
+    height:13px;
+    border-color:var(--gold);
+    background:var(--bg);
+}
+
+.timeline__node--anniversary .timeline__dot::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:5px;
+    height:5px;
+    margin:-2.5px 0 0 -2.5px;
+    border:1px solid var(--gold-bright);
+    border-radius:50%;
+    transition:border-color .35s var(--ease-out);
+}
+
+/* When the marker fills with gold on hover, the inner ring becomes the page's
+   own dark so the double ring survives being lit. */
+.timeline__node--anniversary.is-open .timeline__dot::after,
+.timeline__node--anniversary:hover .timeline__dot::after,
+.timeline__node--anniversary .timeline__hit:focus-visible .timeline__dot::after{
+    border-color:var(--bg);
+}
+
+.timeline__node::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:27px;
+    height:27px;
+    margin:-13.5px 0 0 -13.5px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .35s var(--ease-out), transform .35s var(--ease-out);
+}
+
+/* Zone hover, dot hover and keyboard focus all land on the same state. */
+.timeline__node.is-open .timeline__dot,
+.timeline__node:hover .timeline__dot,
+.timeline__hit:focus-visible .timeline__dot{
+    transform:scale(1.45);
+    background:var(--gold-bright);
+    border-color:var(--gold-bright);
+}
+
+.timeline__node.is-open::before,
+.timeline__node:hover::before,
+.timeline__node:focus-within::before{
+    opacity:.22;
+    transform:scale(1.05);
+}
+
+/* Only the most recent event breathes. */
+.timeline__pulse{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:20px;
+    height:20px;
+    margin:-10px 0 0 -10px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    opacity:0;
+    pointer-events:none;
+}
+
+.timeline__node--latest .timeline__pulse{
+    animation:node-pulse 6.5s ease-in-out infinite;
+}
+
+@keyframes node-pulse{
+    0%, 100%{ opacity:0; transform:scale(1); }
+    50%     { opacity:.16; transform:scale(1.7); }
+}
+
+/* Event preview — a small editorial label, not a card. */
+.timeline__preview{
+    position:absolute;
+    left:50%;
+    bottom:calc(100% + 2px);
+    z-index:6;
+
+    display:flex;
+    gap:.6rem;
+    width:max-content;
+    max-width:min(280px, 62vw);
+    padding:.55rem .6rem;
+
+    background:var(--surface);
+    border:1px solid var(--line);
+    text-align:left;
+
+    opacity:0;
+    transform:translateX(-50%) translateY(4px);
+    pointer-events:none;
+    transition:opacity .34s var(--ease-out), transform .34s var(--ease-out);
+}
+
+.timeline__node.is-open .timeline__preview,
+.timeline__node:hover .timeline__preview,
+.timeline__node:focus-within .timeline__preview{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+    pointer-events:auto;
+}
+
+.timeline__preview-media{
+    flex:0 0 auto;
+    display:block;
+    width:84px;
+    height:64px;
+    overflow:hidden;
+}
+
+.timeline__preview-media img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.timeline__preview-body{
+    display:flex;
+    flex-direction:column;
+    gap:.16rem;
+}
+
+.timeline__preview-date{
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+}
+
+.timeline__preview-title{
+    font-size:.8rem;
+    font-weight:300;
+    color:var(--text);
+}
+
+.timeline__preview-place{
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+}
+
+/* "1ST ANNIVERSARY" / "ORIGINAL DATE" — a designation rather than a place, so
+   it carries the gold the anniversary marker carries. */
+.timeline__preview-place--date{
+    color:var(--gold-dark);
+}
+
+.timeline__preview-link{
+    margin-top:.15rem;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:border-color .35s var(--ease-out);
+}
+
+.timeline__preview-link:hover{ border-bottom-color:currentColor; }
+
+.timeline__months{
+    position:relative;
+    display:block;
+    height:1.35rem;
+    margin-top:.55rem;
+}
+
+.timeline__month{
+    position:absolute;
+    left:var(--x, 0%);
+    transform:translateX(-50%);
+
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+    white-space:nowrap;
+    transition:color .35s var(--ease-out);
+}
+
+.timeline__month.is-active{ color:var(--text); }
+
+.timeline__month::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:calc(100% + 3px);
+    width:1px;
+    height:8px;
+    background:var(--line);
+}
+
+/* --------------------------------------------------------------------------
+   3. OUR WORLD
+   -------------------------------------------------------------------------- */
+.module__head--anchor{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:.4rem;
+    margin-bottom:1rem;
+}
+
+.module__title--display{
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(30px, 3.1vw, 44px);
+    line-height:1;
+    letter-spacing:-.005em;
+    text-transform:none;
+    color:var(--text);
+}
+
+.globe{
+    position:relative;
+    display:block;
+    /* Capped by height as well as width, so the anchor never crowds the
+       Timeline on short viewports. */
+    width:min(100%, 350px, 27vh);
+    aspect-ratio:1 / 1;
+
+    appearance:none;
+    padding:0;
+    border:0;
+    background:none;
+    cursor:pointer;
+}
+
+.globe__svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:visible;
+}
+
+.globe__orbits{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    fill:none;
+    stroke:var(--gold);
+    stroke-width:.6;
+    opacity:.07;
+    pointer-events:none;
+    transform:translate3d(calc(var(--px, 0px) * 1), calc(var(--py, 0px) * 1), 0);
+    transition:transform .6s var(--ease-out);
+}
+
+.globe__sphere{
+    fill:rgba(255,255,255,.012);
+    stroke:rgba(232,227,216,.16);
+    stroke-width:.8;
+}
+
+.globe__line{
+    fill:none;
+    stroke:rgba(232,227,216,.16);
+    stroke-width:.6;
+}
+
+.globe__line--major{
+    stroke:rgba(232,227,216,.24);
+    stroke-width:.8;
+}
+
+/* The small globe turns on its own — slowly enough that you notice it only
+   after watching for a while. Hovering stops it; the full globe is driven
+   entirely by the visitor. */
+.globe__graticule{
+    transform-box:view-box;
+    transform-origin:120px 120px;
+    animation:globe-turn 140s linear infinite;
+}
+
+.globe__orbits{
+    animation:orbit-turn 170s linear infinite reverse;
+}
+
+@keyframes globe-turn{
+    from{ rotate:0deg; }
+    to  { rotate:360deg; }
+}
+
+@keyframes orbit-turn{
+    from{ rotate:0deg; }
+    to  { rotate:360deg; }
+}
+
+.globe:hover .globe__graticule,
+.globe:hover .globe__orbits,
+.globe:focus-visible .globe__graticule,
+.globe:focus-visible .globe__orbits{
+    animation-play-state:paused;
+}
+
+.globe__dots{ position:absolute; inset:0; }
+
+.globe__dot{
+    position:absolute;
+    left:var(--x, 50%);
+    top:var(--y, 50%);
+    width:7px;
+    height:7px;
+    margin:-3.5px 0 0 -3.5px;
+    border-radius:50%;
+    background:var(--gold);
+    opacity:.7;
+
+    animation:dot-breathe var(--dot-dur, 11s) ease-in-out var(--dot-delay, 0s) infinite alternate;
+    transition:opacity .45s var(--ease-out), transform .45s var(--ease-out);
+}
+
+.globe__dot:nth-child(2n){ --dot-dur:13s; --dot-delay:-5s; }
+.globe__dot:nth-child(3n){ --dot-dur:9s;  --dot-delay:-8s; }
+
+@keyframes dot-breathe{
+    from{ scale:1; }
+    to  { scale:1.08; }
+}
+
+.globe__dot::before{
+    content:"";
+    position:absolute;
+    inset:-6px;
+    border:1px solid var(--line-gold);
+    border-radius:50%;
+    opacity:0;
+    transition:opacity .45s var(--ease-out);
+}
+
+.globe:hover .globe__dot{ opacity:1; }
+
+.globe__dot:hover{
+    transform:scale(1.35);
+    opacity:1;
+}
+
+.globe__dot:hover::before{ opacity:1; }
+
+.globe__label{
+    position:absolute;
+    left:11px;
+    top:50%;
+    transform:translateY(-50%);
+
+    font-family:var(--sans);
+    font-size:8px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    white-space:nowrap;
+    opacity:.85;
+    transition:opacity .4s var(--ease-out), color .4s var(--ease-out);
+}
+
+.globe__dot--flip .globe__label{ left:auto; right:11px; }
+
+/* The place a Timeline event happened at, answering while you look. */
+.globe__dot.is-linked{
+    animation:none;
+    opacity:1;
+    scale:1.6;
+    background:var(--gold-bright);
+}
+
+.globe__dot.is-linked::before{ opacity:.3; }
+
+.globe__dot.is-linked .globe__label{
+    opacity:1;
+    color:var(--text);
+}
+
+/* Quiet "this opens" affordance. */
+.globe__open{
+    position:absolute;
+    inset:-6%;
+    border:1px solid transparent;
+    border-radius:50%;
+    transition:border-color .5s var(--ease-out);
+}
+
+.globe:hover .globe__open{ border-color:var(--line-gold); }
+
+.globe:focus-visible{ outline:none; }
+.globe:focus-visible .globe__open{ border-color:var(--gold); }
+
+/* --------------------------------------------------------------------------
+   4. PLAN THE FUTURE
+   -------------------------------------------------------------------------- */
+.future-list{ display:block; }
+
+.future-list__item{
+    display:flex;
+    align-items:baseline;
+    gap:.85rem;
+    padding:.66rem 0;
+    border-top:1px solid var(--line);
+    transition:transform .4s var(--ease-out), opacity .4s var(--ease-out);
+}
+
+.future-list:hover .future-list__item{ opacity:.72; }
+
+.future-list__item:hover{
+    transform:translateX(5px);
+    opacity:1;
+}
+
+.future-list__num{
+    flex:0 0 auto;
+    min-width:1.4rem;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.22em;
+    color:var(--gold-dark);
+    transition:color .4s var(--ease-out);
+}
+
+.future-list__item:hover .future-list__num{ color:var(--gold-bright); }
+
+.future-list__body{
+    display:flex;
+    flex-direction:column;
+    gap:.16rem;
+}
+
+.future-list__title{
+    font-size:.9rem;
+    font-weight:300;
+    letter-spacing:.02em;
+    color:var(--text);
+}
+
+.future-list__note{
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+}
+
+.future-list__item--done .future-list__title{ opacity:.5; }
+
+.future-list__empty{
+    display:block;
+    padding:.66rem 0;
+    border-top:1px solid var(--line);
+    font-size:.85rem;
+    color:var(--muted);
+}
+
+/* --------------------------------------------------------------------------
+   The account — a quiet outline beside the menu, and the drawer behind it
+   -------------------------------------------------------------------------- */
+.hub__account{
+    display:inline-flex;
+    align-items:center;
+    gap:.55rem;
+
+    appearance:none;
+    margin:0;
+    padding:.35rem 0;
+    border:0;
+    border-radius:0;
+    background:none;
+
+    color:var(--muted);
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+
+    transition:color .35s var(--ease-out);
+}
+
+.hub__account:hover{ color:var(--gold-bright); }
+
+.hub__account-glyph{
+    position:relative;
+    width:13px;
+    height:13px;
+    border:1px solid currentColor;
+    border-radius:50%;
+}
+
+.hub__account-glyph::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-4px;
+    width:15px;
+    height:5px;
+    margin-left:-7.5px;
+    border:1px solid currentColor;
+    border-bottom:0;
+    border-radius:7px 7px 0 0;
+}
+
+.hub__account-name{ line-height:1; }
+
+@media (max-width:720px){
+    .hub__account-name{ display:none; }
+}
+
+/* --------------------------------------------------------------------------
+   THE BELL
+
+   The same quiet trigger as the account name beside it: no box, no plate, no
+   shadow. It carries one dot, and only while there is something to say — an
+   empty badge is a nag, and the number is the whole of the message.
+   -------------------------------------------------------------------------- */
+.hub__bell{
+    position:relative;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    appearance:none;
+    margin:0;
+    padding:.35rem 0;
+    border:0;
+    border-radius:0;
+    background:none;
+
+    color:var(--muted);
+    cursor:pointer;
+
+    transition:color .35s var(--ease-out);
+}
+
+.hub__bell:hover{ color:var(--gold-bright); }
+
+/* While the panel is open it stays lit, so the trigger still says what it did. */
+.hub__bell[aria-expanded="true"]{ color:var(--gold-bright); }
+
+.hub__bell-glyph{
+    display:block;
+    width:15px;
+    height:15px;
+}
+
+.hub__bell-glyph svg{
+    display:block;
+    width:100%;
+    height:100%;
+}
+
+/* A keyboard visitor gets a ring, and only a keyboard visitor. */
+.hub__bell:focus-visible{ outline:1px solid var(--gold); outline-offset:6px; }
+.hub__bell.is-quiet-focus:focus-visible{ outline:none; }
+
+.hub__bell-dot{
+    position:absolute;
+    top:-.15rem;
+    right:-.55rem;
+
+    min-width:14px;
+    height:14px;
+    padding:0 3px;
+    box-sizing:border-box;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:7px;
+    background:var(--gold);
+    color:#141512;
+
+    font-family:var(--sans);
+    font-size:9px;
+    font-weight:500;
+    letter-spacing:0;
+    line-height:1;
+}
+
+.hub__bell-dot[hidden]{ display:none; }
+
+
+/* --------------------------------------------------------------------------
+   5. ANNIVERSARY
+   -------------------------------------------------------------------------- */
+/* The countdown is one link to the page of dates. It is a stack of lines, so
+   the anchor has to stop being inline and stop being blue. */
+.countdown__link{
+    display:block;
+    color:inherit;
+    text-decoration:none;
+}
+
+.countdown__link:hover .countdown__number{ color:var(--gold); }
+
+.countdown__title{
+    display:block;
+    margin-bottom:.5rem;
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--text);
+}
+
+.countdown{
+    display:flex;
+    align-items:baseline;
+    gap:.6rem;
+}
+
+.countdown__number{
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(48px, 4.6vw, 64px);
+    line-height:.9;
+    letter-spacing:-.02em;
+    color:var(--gold-bright);
+    font-variant-numeric:tabular-nums;
+}
+
+.countdown__unit{
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--muted);
+}
+
+.countdown__date{
+    display:block;
+    margin-top:.5rem;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--text);
+}
+
+.countdown__hint{
+    display:block;
+    margin-top:.25rem;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.14em;
+    color:var(--muted-dim);
+}
+
+/* "1ST ANNIVERSARY" — the one thing in this module worth reading twice. */
+.countdown__hint--ordinal{
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--gold-dark);
+}
+
+/* The way out when there is nothing to count down to yet. */
+.countdown__empty{
+    display:inline-block;
+    margin-top:1.1rem;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-decoration:none;
+    transition:color .4s var(--ease-out);
+}
+
+.countdown__empty:hover{ color:var(--gold-bright); }
+
+.countdown__empty[hidden]{ display:none; }
+
+.upcoming{
+    display:block;
+    margin:1rem 0 0;
+    padding:0;
+    list-style:none;
+}
+
+.upcoming__item{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:.8rem;
+    width:100%;
+    padding:.48rem 0;
+
+    appearance:none;
+    border:0;
+    border-top:1px solid var(--line);
+    background:none;
+    text-align:left;
+    cursor:pointer;
+
+    transition:transform .4s var(--ease-out), opacity .4s var(--ease-out);
+}
+
+.upcoming:hover .upcoming__item{ opacity:.7; }
+
+.upcoming__item:hover,
+.upcoming__item:focus-visible{
+    opacity:1;
+    transform:translateX(4px);
+}
+
+.upcoming__item:focus-visible{
+    outline:1px solid var(--gold);
+    outline-offset:3px;
+}
+
+.upcoming__name{
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+    transition:color .4s var(--ease-out);
+}
+
+.upcoming__item:hover .upcoming__name{ color:var(--gold); }
+
+.upcoming__days{
+    flex:0 0 auto;
+    font-family:var(--serif);
+    font-size:19px;
+    line-height:1;
+    color:var(--muted);
+    font-variant-numeric:tabular-nums;
+}
+
+.upcoming__unit{
+    margin-left:.18rem;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.14em;
+    color:var(--muted-dim);
+}
+
+/* --------------------------------------------------------------------------
+   The world — interactive globe
+   -------------------------------------------------------------------------- */
+.world{
+    position:fixed;
+    inset:0;
+    z-index:80;
+    background:var(--bg);
+    opacity:0;
+    transition:opacity .42s var(--ease-out);
+}
+
+.world[hidden]{ display:none; }
+.world.is-open{ opacity:1; }
+
+.world__stage{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:min(78vh, 62vw);
+    aspect-ratio:1;
+    margin-left:calc(min(78vh, 62vw) / -2);
+    margin-top:calc(min(78vh, 62vw) / -2);
+
+    transform:scale(.12);
+    transform-origin:var(--morph-x, 50%) var(--morph-y, 50%);
+    opacity:0;
+    transition:transform .68s cubic-bezier(.22, 1, .36, 1), opacity .5s var(--ease-out);
+}
+
+.world.is-open .world__stage{
+    transform:none;
+    opacity:1;
+}
+
+.world__svg{
+    width:100%;
+    height:100%;
+    overflow:visible;
+    cursor:grab;
+    touch-action:none;
+}
+
+.world__svg.is-dragging{ cursor:grabbing; }
+
+.world__sphere{
+    fill:rgba(255,255,255,.014);
+    stroke:none;
+}
+
+.world__limb{
+    fill:none;
+    stroke:rgba(232,227,216,.2);
+    stroke-width:1.2;
+}
+
+/* Decoration never takes a pointer; only countries and cities do. */
+.world__background,
+.world__sphere,
+.world__graticule,
+.world__limb,
+.world__marker-ring{
+    pointer-events:none;
+}
+
+.world__countries,
+.world__markers{
+    pointer-events:none;   /* the children opt back in */
+}
+
+.world__line{
+    fill:none;
+    stroke:rgba(232,227,216,.09);
+    stroke-width:.8;
+}
+
+.world__country{
+    /* A fill that is almost nothing — but not `none`, because only a filled
+       shape is hit-testable across its whole interior. */
+    fill:rgba(232,227,216,.03);
+    stroke:rgba(232,227,216,.16);
+    stroke-width:.5;
+    vector-effect:non-scaling-stroke;
+    pointer-events:all;
+    transition:fill .35s var(--ease-out), stroke .35s var(--ease-out);
+}
+
+.world__country:hover{
+    fill:rgba(200,173,117,.10);
+    stroke:rgba(200,173,117,.65);
+    cursor:pointer;
+}
+
+.world__country.has-memories{
+    fill:rgba(183,154,98,.12);
+    stroke:rgba(200,173,117,.42);
+}
+
+.world__country.is-selected{
+    fill:rgba(200,173,117,.18);
+    stroke:var(--gold-bright);
+}
+
+.world__marker{
+    fill:var(--gold);
+    stroke:var(--bg);
+    stroke-width:1.5;
+    pointer-events:all;
+    cursor:pointer;
+    transition:fill .3s var(--ease-out);
+}
+
+/* A 36px hit area around a 12px dot. */
+.world__marker-hit{
+    fill:transparent;
+    stroke:none;
+    pointer-events:all;
+    cursor:pointer;
+}
+
+.world__marker:hover,
+.world__marker.is-selected{ fill:var(--gold-bright); }
+
+.world__marker-ring{
+    fill:none;
+    stroke:var(--gold-bright);
+    stroke-width:1;
+    opacity:.5;
+    pointer-events:none;
+}
+
+/* Panel + chrome */
+.world__panel{
+    position:absolute;
+    right:clamp(1.5rem, 4vw, 4rem);
+    top:50%;
+    transform:translateY(-50%);
+    /* A stable column: wide enough for a cover and a title to breathe, never
+       so wide that the globe becomes a thumbnail. */
+    width:clamp(340px, 30vw, 460px);
+    max-height:70vh;
+    overflow-y:auto;
+
+    opacity:0;
+    transition:opacity .45s var(--ease-out);
+}
+
+.world.is-open .world__panel{ opacity:1; }
+
+.world__bar{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:clamp(1.2rem, 3.4vh, 2.2rem) clamp(1.5rem, 4vw, 3rem);
+}
+
+.world__back{
+    appearance:none;
+    padding:.3rem 0;
+    border:0;
+    border-bottom:1px solid transparent;
+    background:none;
+    color:var(--text);
+
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:color .4s var(--ease-out), border-color .4s var(--ease-out);
+}
+
+.world__back:hover{
+    color:var(--gold-bright);
+    border-bottom-color:var(--line);
+}
+
+.world__hint{
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--muted-dim);
+}
+
+.world__index{
+    position:absolute;
+    left:clamp(1.5rem, 4vw, 3rem);
+    bottom:clamp(1.2rem, 3.4vh, 2.2rem);
+    display:flex;
+    flex-wrap:wrap;
+    gap:.4rem 1.1rem;
+    max-width:min(46vw, 520px);
+}
+
+.world__index button{
+    appearance:none;
+    padding:.2rem 0;
+    border:0;
+    border-bottom:1px solid transparent;
+    background:none;
+    color:var(--muted);
+
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:color .35s var(--ease-out), border-color .35s var(--ease-out);
+}
+
+.world__index button:hover,
+.world__index button:focus-visible{
+    color:var(--gold-bright);
+    border-bottom-color:var(--line-gold);
+}
+
+/* Shown while a country is selected. */
+.world__panel-back{
+    display:inline-flex;
+    align-items:center;
+    gap:.45rem;
+    margin-bottom:1rem;
+
+    appearance:none;
+    padding:.2rem 0;
+    border:0;
+    border-bottom:1px solid transparent;
+    background:none;
+    color:var(--muted);
+
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:color .35s var(--ease-out), border-color .35s var(--ease-out);
+}
+
+.world__panel-back:hover{
+    color:var(--gold-bright);
+    border-bottom-color:var(--line-gold);
+}
+
+/* The name of whatever country the pointer is over — a label, not a tooltip. */
+.world__country-label{
+    position:absolute;
+    left:50%;
+    top:clamp(3.4rem, 8vh, 5rem);
+    transform:translateX(-50%);
+
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    color:var(--gold-bright);
+    pointer-events:none;
+
+    opacity:0;
+    transition:opacity .3s var(--ease-out);
+}
+
+.world__country-label.is-visible{ opacity:1; }
+
+/* Panel content */
+.world__eyebrow{
+    display:block;
+    margin-bottom:.5rem;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--gold);
+}
+
+.world__title{
+    margin:0 0 .3rem;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(1.8rem, 2.6vw, 2.5rem);
+    line-height:1.05;
+    color:var(--text);
+}
+
+.world__sub{
+    margin:0 0 1.2rem;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+}
+
+.world__list{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+.world__list li{ border-top:1px solid var(--line); }
+
+.world__list button,
+.world__list a{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:.8rem;
+    width:100%;
+    padding:.62rem 0;
+
+    appearance:none;
+    border:0;
+    background:none;
+    text-align:left;
+    text-decoration:none;
+    cursor:pointer;
+
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted);
+    transition:color .35s var(--ease-out), transform .35s var(--ease-out);
+}
+
+.world__list button:hover,
+.world__list a:hover,
+.world__list button:focus-visible{
+    color:var(--gold-bright);
+    transform:translateX(4px);
+}
+
+.world__list .world__count{
+    color:var(--muted-dim);
+    font-size:9px;
+}
+
+.world__photos{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:.4rem;
+    margin:1rem 0 0;
+}
+
+.world__photos img{
+    display:block;
+    width:100%;
+    aspect-ratio:1;
+    object-fit:cover;
+    filter:saturate(.8) brightness(.92);
+    transition:filter .4s var(--ease-out);
+}
+
+.world__photos img:hover{ filter:saturate(1) brightness(1); }
+
+.world__empty{
+    margin:1rem 0 0;
+    font-size:.85rem;
+    font-weight:300;
+    line-height:1.7;
+    color:var(--muted-dim);
+}
+
+.world__action{
+    display:inline-block;
+    margin-top:1.2rem;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:border-color .35s var(--ease-out);
+}
+
+.world__action:hover{ border-bottom-color:currentColor; }
+
+/* The same action, as a button. */
+button.world__action{
+    appearance:none;
+    padding:0;
+    border:0;
+    border-bottom:1px solid transparent;
+    background:none;
+    text-align:left;
+    cursor:pointer;
+}
+
+button.world__action:hover{ border-bottom-color:currentColor; }
+
+
+/* --------------------------------------------------------------------------
+   The full-screen menu
+   -------------------------------------------------------------------------- */
+.hub-menu{
+    position:fixed;
+    inset:0;
+    z-index:90;
+    background:rgba(16,17,15,.96);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    animation:hub-bg-in .35s var(--ease-out) both;
+}
+
+.hub-menu[hidden]{ display:none; }
+
+.hub-menu__panel{
+    position:relative;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:0 clamp(1.5rem, 8vw, 8rem);
+}
+
+.hub-menu__close{
+    position:absolute;
+    top:clamp(1.1rem, 3vh, 2rem);
+    right:clamp(1rem, 3vw, 2.4rem);
+
+    width:2.2rem;
+    height:2.2rem;
+    display:grid;
+    place-items:center;
+
+    appearance:none;
+    border:0;
+    background:none;
+    color:var(--text);
+    font-size:1.3rem;
+    line-height:1;
+    cursor:pointer;
+}
+
+.hub-menu__eyebrow{
+    margin:0 0 2rem;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.4em;
+    text-transform:uppercase;
+    color:var(--muted);
+}
+
+.hub-menu__list{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+.hub-menu__list a{
+    display:inline-block;
+    padding:.35rem 0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(1.9rem, 4vw, 3rem);
+    line-height:1.25;
+    color:var(--text);
+    text-decoration:none;
+    transition:color .4s var(--ease-out), transform .4s var(--ease-out);
+}
+
+.hub-menu__list a:hover{
+    color:var(--gold-bright);
+    transform:translateX(8px);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width:1200px){
+    .hub__space{
+        display:flex;
+        flex-direction:column;
+        gap:clamp(52px, 8vh, 96px);
+
+        min-height:0;
+        padding:clamp(110px, 16vh, 160px) clamp(1.25rem, 5vw, 3rem) clamp(60px, 10vh, 100px);
+    }
+
+    .link{ display:none; }
+
+    .main-hub-stage{
+        width:100%;
+        min-height:0;
+        padding:0;
+        transform:none;
+    }
+
+    .module{
+        position:relative;
+        inset:auto;
+        left:auto;
+        right:auto;
+        top:auto;
+        bottom:auto;
+        translate:none;
+        width:auto;
+    }
+
+    .module--moments{ width:min(100%, 330px); align-self:flex-start; }
+    .module--timeline{ width:min(100%, 560px); align-self:flex-end; }
+    .module--map{ width:min(100%, 470px); align-self:center; }
+    .module--future{ width:min(100%, 300px); align-self:flex-start; margin-left:5%; }
+    .module--countdown{ width:min(100%, 320px); align-self:flex-end; margin-right:7%; }
+
+    .world__stage{ width:min(64vh, 76vw); margin-left:calc(min(64vh, 76vw) / -2); margin-top:calc(min(64vh, 76vw) / -2); }
+    .world__panel{
+        position:relative;
+        right:auto;
+        top:auto;
+        transform:none;
+        width:min(100% - 3rem, 520px);
+        margin:0 auto;
+        max-height:none;
+    }
+    .world.is-open .world__panel{ opacity:1; }
+}
+
+@media (max-width:700px){
+    .ambient__zone{ opacity:.7; }
+
+    .hub__years{ gap:24px; }
+    .hub__brand{ letter-spacing:.3em; }
+
+    .module--moments{ width:92%; align-self:flex-start; }
+    .module--timeline{ width:100%; align-self:stretch; }
+    .module--map{ width:100%; align-self:stretch; }
+    .module--future{ width:84%; align-self:flex-start; margin-left:0; }
+    .module--countdown{ width:88%; align-self:flex-end; margin-right:0; }
+
+    .globe{ width:min(100%, 280px); }
+
+    .countdown__number{ font-size:clamp(44px, 13vw, 58px); }
+
+    .timeline{ height:88px; }
+
+    .world{
+        display:flex;
+        flex-direction:column;
+        gap:1.2rem;
+        padding:4.5rem 1.25rem 1.5rem;
+        overflow-y:auto;
+        box-sizing:border-box;
+    }
+    .world__stage{
+        position:relative;
+        left:auto;
+        top:auto;
+        margin:0 auto;
+        width:min(78vw, 380px);
+    }
+    .world__panel{ width:100%; }
+    .world__index{ position:relative; left:auto; bottom:auto; max-width:none; }
+    .world__hint{ display:none; }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion — everything stops moving; nothing stops working.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce){
+    .hub,
+    .hub__brand,
+    .hub__years,
+    .hub__menu-button,
+    .module,
+    .module__inner,
+    .hub-menu,
+    .ambient__zone,
+    .globe__graticule,
+    .globe__orbits,
+    .globe__dot,
+    .stack__photo,
+    .timeline__pulse{
+        animation:none;
+    }
+
+    .module__inner{ transform:none; }
+
+    .world__stage{
+        transform:none;
+        transition:opacity .2s linear;
+    }
+
+    .module__inner,
+    .stack__photo,
+    .stack__photo img,
+    .globe__dot,
+    .timeline__dot,
+    .timeline__node::before,
+    .timeline__preview,
+    .timeline,
+    .future-list__item,
+    .upcoming__item,
+    .link,
+    .module__function::after,
+    .module__arrow,
+    .world,
+    .world__stage,
+    .world__country,
+    .world__panel{
+        transition-duration:.01ms;
+    }
+
+    .module--moments:hover .stack__photo,
+    .module--moments.is-expanded .stack__photo{
+        animation-play-state:running;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   Recent activity — a quiet record, not a feed
+   -------------------------------------------------------------------------- */
+.hub-menu__activity{
+    margin-top:2.4rem;
+    padding-top:1.6rem;
+    border-top:1px solid var(--line-weak);
+    max-width:34rem;
+}
+
+.hub-menu__activity-title{
+    margin:0 0 1rem;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--muted-dim);
+}
+
+.activity-list{ margin:0; padding:0; list-style:none; }
+
+.activity-list__item{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:.45rem;
+
+    margin-bottom:.7rem;
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.04em;
+    color:var(--muted);
+}
+
+.activity-list__memory{
+    color:var(--gold);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:border-color .3s var(--ease-out);
+}
+
+.activity-list__memory:hover{ border-bottom-color:currentColor; }
+
+/* The memory this line is about has been removed, so the title is a record of
+   what happened rather than a way to go anywhere. */
+.activity-list__memory--gone{
+    color:var(--muted);
+    border-bottom-color:transparent;
+    cursor:default;
+}
+
+.activity-list__when{
+    margin-left:auto;
+    font-size:9px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--muted-dim);
+}
+
+.activity-list__empty{
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--muted-dim);
+}
+
+/* Unread: muted gold, never a red badge. */
+.hub__menu-unread{
+    margin-left:.5rem;
+    color:var(--gold);
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.16em;
+}
+
+/* ==========================================================================
+   Our World — a place previews under the pointer and pins on a click
+
+   Scoped to the Memory Map page. The Hub's globe keeps the behaviour it
+   already had, because it shares this stylesheet and this renderer.
+   ========================================================================== */
+
+/* The default state has no panel at all; it appears for a previewed or pinned
+   place, for an open country, or when the archive holds no places yet. This
+   part is layout-independent, so it holds at every width. */
+.world--panel-layout .world__panel{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .34s var(--ease-out), transform .34s var(--ease-out);
+}
+
+.world--panel-layout.world.is-open.has-panel .world__panel{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+/* Above the width where the panel stacks under the globe, the globe makes room
+   for it instead of sitting behind it. Only the drawing moves: the stage keeps
+   its own centred box, so the open animation, the drag and the zoom are all
+   untouched. */
+@media (min-width:1201px){
+    .world--panel-layout .world__svg{
+        transform-origin:50% 50%;
+        transition:transform .48s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .world--panel-layout.world.has-place .world__svg{
+        /* Proportional to the window, not to the globe, so the move always
+           reads as making room for the panel rather than as a nudge. The
+           slight scale is what turns a slide into a two-column composition. */
+        transform:translateX(-14vw) scale(.93);
+    }
+
+    .world--panel-layout .world__panel{
+        transform:translateY(-50%) translateX(14px);
+    }
+
+    .world--panel-layout.world.is-open.has-panel .world__panel{
+        transform:translateY(-50%) translateX(0);
+    }
+}
+
+/* Only the block that changed settles in, so the panel shell never blinks. */
+.world__swap{
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .24s var(--ease-out), transform .24s var(--ease-out);
+}
+
+.world__swap.is-in{
+    opacity:1;
+    transform:none;
+}
+
+/* --------------------------------------------------------------- the place */
+.world--panel-layout .world__title{
+    margin:.1rem 0 .2rem;
+}
+
+.world__cover{
+    display:block;
+    margin:.9rem 0 1rem;
+    overflow:hidden;
+    border:1px solid var(--archive-line);
+    background:#0E0F0D;
+}
+
+.world__cover img{
+    display:block;
+    width:100%;
+    aspect-ratio:4 / 3;
+    max-height:min(230px, 26vh);
+    object-fit:cover;
+    filter:saturate(.9) brightness(.96);
+}
+
+.world__cover--empty{
+    aspect-ratio:4 / 3;
+    background:
+        linear-gradient(135deg, rgba(200,173,117,.06), rgba(0,0,0,0) 60%),
+        #0E0F0D;
+}
+
+/* Cover between two quiet arrows: they move between memories, never between
+   a memory's photographs. */
+.world__nav{
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+}
+
+.world__nav .world__cover{
+    flex:1 1 auto;
+    margin:.9rem 0 1rem;
+}
+
+.world__nav-button{
+    flex:0 0 auto;
+
+    appearance:none;
+    border:0;
+    background:none;
+    padding:.2rem .35rem;
+
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1;
+    color:var(--archive-muted);
+    cursor:pointer;
+    transition:color .3s var(--ease-out);
+}
+
+.world__nav-button:hover,
+.world__nav-button:focus-visible{
+    color:var(--archive-gold-bright);
+}
+
+.world__facts{ margin-top:.2rem; }
+
+.world__memory-title{
+    margin:0 0 .3rem;
+    font-family:var(--serif, Georgia, serif);
+    font-size:1.05rem;
+    font-weight:400;
+    letter-spacing:.01em;
+    color:var(--archive-text);
+}
+
+.world__memory-date,
+.world__memory-meta,
+.world__memory-photos,
+.world__memory-count{
+    margin:0 0 .25rem;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.world__memory-count{ color:var(--archive-gold-dark); }
+
+.world__place .world__action{ margin-top:.9rem; }
+
+/* ------------------------------------------------------------- the markers */
+
+/* Previewed: brighter, nothing more. Pinned: gold with a quiet outer ring. */
+.world--panel-layout .world__marker-group:hover .world__marker{
+    fill:var(--gold-bright, #E2C68F);
+}
+
+.world--panel-layout .world__marker-group:hover .world__marker-ring{
+    stroke:rgba(200,173,117,.30);
+}
+
+.world--panel-layout .world__marker.is-selected{
+    fill:var(--gold-bright, #E2C68F);
+}
+
+.world--panel-layout .world__marker-ring{
+    fill:none;
+    stroke:transparent;
+    stroke-width:1;
+    transition:stroke .3s var(--ease-out);
+}
+
+.world--panel-layout .world__marker-group:has(.world__marker.is-selected) .world__marker-ring{
+    stroke:rgba(200,173,117,.55);
+}
+
+/* A marker that is reachable by keyboard says so — in the archive's own gold
+   rather than the browser's blue. The outline is dropped in both states so a
+   mouse click leaves nothing behind. */
+.world--panel-layout .world__marker-group:focus{ outline:none; }
+.world--panel-layout .world__marker-group:focus-visible{ outline:none; }
+
+.world--panel-layout .world__marker-group:focus-visible .world__marker-ring{
+    stroke:rgba(226,198,143,.85);
+}
+
+/* --------------------------------------------------------------------------
+   6. PRIVATE ARCHIVE
+
+   Below Our World, centred, smaller than the five above it: a door in the floor
+   of the room rather than a sixth thing orbiting the globe. Nothing here is a
+   count, because a count would be a fact about memories the Hub is not allowed
+   to know.
+   -------------------------------------------------------------------------- */
+/* Absolute, like the other five — it shares their `.module` rule — but outside
+   the stage, so it sits UNDER Our World rather than orbiting it. The stage's own
+   bottom padding leaves room for it at every height the archive is read at. */
+.module--private{
+    left:50%;
+    translate:-50% 0;
+    bottom:clamp(14px, 4vh, 46px);
+    width:clamp(180px, 16vw, 230px);
+    text-align:left;
+}
+
+.private-module__link{ display:block; }
+
+.private-module__head{
+    display:flex;
+    align-items:flex-start;
+    gap:.7rem;
+}
+
+/* The same outline lock as the page and the same weight as the bell and the
+   account glyph. Drawn, never an emoji, never a badge. */
+.private-module__glyph{
+    display:block;
+    flex:0 0 auto;
+    width:15px;
+    height:15px;
+    margin-top:.35rem;
+    color:var(--gold);
+}
+
+.private-module__glyph svg{ display:block; width:100%; height:100%; }
+
+.private-module__title{
+    margin:0;
+    font-family:var(--sans);
+    font-weight:500;
+    font-size:11px;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    line-height:1.7;
+    color:var(--text);
+    transition:color .35s var(--ease-out);
+}
+
+.private-module__sub{
+    margin:.7rem 0 0;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--muted);
+}
+
+/* The state of the archive — Set up, Locked, Open — and never anything about
+   what is in it. */
+.private-module__state{
+    margin:.45rem 0 0;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--gold-dark);
+}
+
+.private-module__actions{
+    display:flex;
+    align-items:baseline;
+    gap:1.1rem;
+    margin-top:1.1rem;
+}
+
+.private-module__foot{ margin-top:0; }
+
+/* The foot is a link inside the module, so it gets the ring the other modules'
+   feet get, in the archive's gold. */
+.private-module__foot:focus-visible{ outline:1px solid var(--gold); outline-offset:4px; }
+
+/* Locking from the Hub: a word, not a button-shaped button. The point is that
+   it is reachable in one glance when somebody is about to hand the laptop over,
+   without becoming the loudest thing in the room. */
+.private-module__lock{
+    appearance:none;
+    margin:0;
+    padding:0 0 0 1.1rem;
+    border:0;
+    border-left:1px solid var(--line-weak);
+    background:none;
+
+    color:var(--muted);
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    cursor:pointer;
+
+    transition:color .3s var(--ease-out);
+}
+
+.private-module__lock:hover{ color:var(--gold-bright); }
+.private-module__lock:focus-visible{ outline:1px solid var(--gold); outline-offset:4px; }
+.private-module__lock[disabled]{ color:var(--muted-dim); cursor:default; }
+.private-module__lock[hidden]{ display:none; }
+
+.module--private:hover .private-module__title,
+.module--private:focus-within .private-module__title{ color:var(--gold-bright); }
+
+.module--private:hover .private-module__glyph,
+.module--private:focus-within .private-module__glyph{ color:var(--gold-bright); }
+
+/* On a phone the five stack; this joins the stack rather than floating. */
+@media (max-width:720px){
+    /* On a phone the other five become a column, so this stops being placed and
+       joins the flow rather than floating over it. */
+    .module--private{
+        position:relative;
+        left:auto;
+        bottom:auto;
+        translate:none;
+        width:100%;
+        margin:2.4rem 0 0;
+    }
+    /* The two-line wordmark stays two lines: hiding the break joined the words
+       into "PrivateArchive". */
+}

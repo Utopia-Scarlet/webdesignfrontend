@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Our Space — Love Story</title>
+    <meta name="description" content="A quiet door to Our Space.">
+    <meta name="robots" content="noindex">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&amp;family=Inter:wght@300;400;500&amp;display=swap">
+
+    <link rel="stylesheet" href="../tokens.css">
+    <link rel="stylesheet" href="pairing.css">
+
+    <script src="../routes.js" defer></script>
+    <script src="../config.js" defer></script>
+    <script src="../hub/modules/api.js" defer></script>
+    <script src="../auth.js" defer></script>
+    <script src="../entry.js" defer></script>
+    <script src="pairing.js" defer></script>
+</head>
+
+<body class="pairing-page">
+
+    <!-- This page used to be the pairing room: choose a partner, wait for one,
+         type a code. None of that is a step anyone has to take any more. An
+         account has its own space from the moment it is made, and a shared
+         space is joined by asking, not by pairing.
+
+         So the address is kept, and it decides nothing. It hands the visitor
+         to the one resolver that does: signed in, Our Space; signed out, the
+         Entrance. An old link that still carries an invitation goes to the
+         invitation instead, because that is what the person following it was
+         trying to do. -->
+    <div class="pairing" id="pairing">
+
+        <header class="pairing__chrome">
+            <span class="pairing__brand">Love / Story</span>
+        </header>
+
+        <main class="pairing__stage" id="pairingStage" aria-live="polite">
+            <p class="pairing__loading">One moment&hellip;</p>
+        </main>
+    </div>
+
+    <div class="grain" aria-hidden="true"></div>
+
+    <noscript>
+        <p style="padding:2rem;text-align:center">
+            JavaScript is needed to take you through.
+            <a href="../gallery/index.html">Go to Our Story &rarr;</a>
+        </p>
+    </noscript>
+
+</body>
+
+</html>

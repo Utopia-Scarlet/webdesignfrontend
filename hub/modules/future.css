@@ -1,0 +1,760 @@
+/* ==========================================================================
+   LoveStory — Plan the Future
+
+   The index of plans and one plan opened. Same world as the Hub and the
+   Library: colour comes entirely from the archive tokens in tokens.css, so
+   nothing here invents a palette of its own.
+
+   Depends on ../../tokens.css and memory-form.css (the shared sheet).
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Page and shell
+   -------------------------------------------------------------------------- */
+.future-page{
+    background:#0D0E0C;
+    color:var(--archive-text);
+    min-height:100svh;
+    overflow:hidden;
+}
+
+body.future-page .grain{ opacity:.022; }
+
+.future{
+    display:flex;
+    flex-direction:column;
+
+    width:calc(100vw - 48px);
+    height:calc(100vh - 48px);
+    margin:24px;
+
+    background:#151613;
+    border:1px solid rgba(200,173,117,.20);
+    border-radius:28px;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.015),
+        0 24px 70px rgba(0,0,0,.42);
+    overflow:hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Chrome — the brand, the two lists, and the one action
+   -------------------------------------------------------------------------- */
+.future__chrome{
+    display:flex;
+    align-items:center;
+    gap:1.4rem;
+
+    padding:1.5rem 2.4rem;
+    border-bottom:1px solid var(--archive-line);
+    background:linear-gradient(180deg,rgba(255,255,255,.012),transparent);
+}
+
+.future__brand{
+    font-family:var(--serif);
+    font-size:1.02rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-text);
+    text-decoration:none;
+}
+
+.future__back{
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--archive-muted);
+    text-decoration:none;
+    transition:color .35s var(--ease-out);
+}
+
+.future__back:hover{ color:var(--archive-gold-bright); }
+
+.future__tabs{
+    display:flex;
+    gap:.25rem;
+    margin-left:auto;
+    padding:3px;
+    border:1px solid var(--archive-line);
+    border-radius:var(--radius-pill);
+}
+
+.future__tab{
+    padding:.5rem 1.1rem;
+    border:0;
+    border-radius:var(--radius-pill);
+    background:none;
+    color:var(--archive-muted);
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    transition:color .35s var(--ease-out),background .35s var(--ease-out);
+}
+
+.future__tab:hover{ color:var(--archive-text); }
+
+.future__tab.is-on{
+    background:rgba(200,173,117,.14);
+    color:var(--archive-gold-bright);
+}
+
+.future__new{
+    padding:.6rem 1.15rem;
+    border:1px solid var(--archive-line-gold);
+    border-radius:var(--radius-pill);
+    background:none;
+    color:var(--archive-gold-bright);
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    transition:border-color .35s var(--ease-out),background .35s var(--ease-out);
+}
+
+.future__new:hover{
+    border-color:rgba(200,173,117,.42);
+    background:rgba(200,173,117,.08);
+}
+
+/* --------------------------------------------------------------------------
+   The index
+   -------------------------------------------------------------------------- */
+.future__scroll{
+    flex:1;
+    min-height:0;              /* or the grid item refuses to scroll */
+    overflow-y:auto;
+    padding:3.2rem clamp(1.6rem,6vw,7rem) 5rem;
+}
+
+.future__intro{
+    max-width:900px;
+    margin:0 auto;
+}
+
+.future__eyebrow{
+    margin:0;
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}
+
+.future__title{
+    margin:.7rem 0 0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(2.2rem,4.4vw,3.4rem);
+    line-height:1.05;
+    letter-spacing:.01em;
+}
+
+.future__stats{
+    margin:.9rem 0 0;
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.future__note{
+    max-width:900px;
+    margin:3rem auto 0;
+    font-size:.95rem;
+    color:var(--archive-muted);
+}
+
+/* The error line is a flex row, so it would otherwise out-specify [hidden]. */
+.future__note[hidden]{ display:none; }
+
+.future__note--empty{
+    font-family:var(--serif);
+    font-size:1.5rem;
+    letter-spacing:.04em;
+    color:var(--archive-muted);
+}
+
+.future__note--error{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    color:var(--archive-danger);
+}
+
+.future__retry{
+    border:0;
+    background:none;
+    padding:0;
+    color:var(--archive-gold-bright);
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   One row of the index: a number, a name, a range.
+
+   The number is the ordinal, not decoration — a list of plans is read in
+   order, and order is the one thing a plan has to respect.
+   -------------------------------------------------------------------------- */
+.plan-list{
+    max-width:900px;
+    margin:3rem auto 0;
+    padding:0;
+    list-style:none;
+    counter-reset:plan;
+}
+
+.plan-row{
+    border-top:1px solid var(--archive-line);
+}
+
+.plan-row:last-child{
+    border-bottom:1px solid var(--archive-line);
+}
+
+.plan-row__button{
+    display:grid;
+    grid-template-columns:3.4rem minmax(0,1fr) auto;
+    align-items:baseline;
+    gap:1.4rem;
+
+    width:100%;
+    padding:1.7rem .6rem 1.7rem 0;
+    border:0;
+    background:none;
+    text-align:left;
+    color:inherit;
+    transition:padding-left .5s var(--ease-out),background .5s var(--ease-out);
+}
+
+.plan-row:hover .plan-row__button,
+.plan-row__button:focus-visible{
+    padding-left:1rem;
+    background:linear-gradient(90deg,rgba(200,173,117,.07),transparent 62%);
+}
+
+.plan-row__number{
+    counter-increment:plan;
+    font-size:10px;
+    letter-spacing:.2em;
+    color:var(--archive-gold-dark);
+    transition:color .4s var(--ease-out);
+}
+
+.plan-row__number::before{
+    content:counter(plan,decimal-leading-zero);
+}
+
+.plan-row:hover .plan-row__number{ color:var(--archive-gold-bright); }
+
+.plan-row__title{
+    display:block;
+    font-family:var(--serif);
+    font-size:1.65rem;
+    font-weight:300;
+    line-height:1.2;
+    letter-spacing:.01em;
+}
+
+.plan-row__where{
+    display:block;
+    margin:.5rem 0 0;
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.plan-row__range{
+    text-align:right;
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+    white-space:nowrap;
+}
+
+.plan-row__meta{
+    display:block;
+    margin:.55rem 0 0;
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+/* --------------------------------------------------------------------------
+   One plan, opened
+   -------------------------------------------------------------------------- */
+.plan-detail{
+    position:fixed;
+    inset:0;
+    z-index:var(--z-modal);
+    display:flex;
+    flex-direction:column;
+
+    opacity:0;
+    transition:opacity .32s var(--ease-out);
+}
+
+.plan-detail.is-open{ opacity:1; }
+
+.plan-detail[hidden]{ display:none; }
+
+/* The plan sheet is opened *from* the detail, so it has to sit above it. */
+.future-page .sheet{ z-index:calc(var(--z-modal) + 10); }
+
+/* Opaque, not translucent. The album's detail can show the photographs
+   through behind it; a plan is a page of text, and the index ghosting through
+   behind the title only makes both harder to read. */
+.plan-detail__scrim{
+    position:absolute;
+    inset:0;
+    background:#0C0D0B;
+}
+
+.plan-detail__bar{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:1.2rem;
+
+    padding:1.5rem clamp(1.6rem,5vw,3.4rem);
+    border-bottom:1px solid var(--archive-line-weak);
+}
+
+.plan-detail__back{
+    border:0;
+    background:none;
+    padding:0;
+    color:var(--archive-muted);
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    transition:color .35s var(--ease-out);
+}
+
+.plan-detail__back:hover{ color:var(--archive-gold-bright); }
+
+.plan-detail__tools{
+    display:flex;
+    gap:1.4rem;
+    margin-left:auto;
+}
+
+.plan-detail__edit,
+.plan-detail__delete{
+    border:0;
+    background:none;
+    padding:0;
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+}
+
+.plan-detail__edit{ color:var(--archive-gold-bright); }
+.plan-detail__edit:hover{ color:var(--archive-text); }
+
+.plan-detail__delete{ color:var(--archive-danger); }
+.plan-detail__delete:hover{ color:#C08E77; }
+
+.plan-detail__stage{
+    position:relative;
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:3.4rem clamp(1.6rem,5vw,3.4rem) 5rem;
+}
+
+.plan-archive{
+    max-width:800px;
+    margin:0 auto;
+}
+
+.plan-archive__status{
+    margin:0;
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}
+
+.plan-archive__status--done{ color:var(--archive-muted-dim); }
+
+.plan-archive__title{
+    margin:.8rem 0 0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(2.1rem,4.2vw,3.2rem);
+    line-height:1.06;
+}
+
+.plan-archive__where{
+    margin:1rem 0 0;
+    font-size:11px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--archive-muted);
+}
+
+.plan-archive__range{
+    margin:2.4rem 0 0;
+    padding:1.6rem 0;
+    border-top:1px solid var(--archive-line);
+    border-bottom:1px solid var(--archive-line);
+
+    font-family:var(--serif);
+    font-size:1.5rem;
+    letter-spacing:.06em;
+    color:var(--archive-gold-bright);
+}
+
+.plan-archive__duration{
+    display:block;
+    margin:.6rem 0 0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.plan-archive__section{
+    margin:2.6rem 0 0;
+}
+
+.plan-archive__label{
+    margin:0 0 .9rem;
+    font-size:10px;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    color:var(--archive-gold-dark);
+}
+
+.plan-archive__prose{
+    margin:0;
+    font-size:1.02rem;
+    line-height:1.85;
+    color:var(--archive-text);
+    white-space:pre-line;
+}
+
+.plan-archive__facts{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:1.6rem 2.4rem;
+    margin:0;
+}
+
+.plan-archive__fact dt{
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.plan-archive__fact dd{
+    margin:.6rem 0 0;
+    font-size:.98rem;
+    line-height:1.7;
+    color:var(--archive-text);
+    white-space:pre-line;
+}
+
+.plan-archive__by{
+    margin:3rem 0 0;
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+/* --------------------------------------------------------------------------
+   The itinerary — the days, one under another
+   -------------------------------------------------------------------------- */
+.itinerary{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+.itinerary__day{
+    display:grid;
+    grid-template-columns:190px minmax(0,1fr);
+    gap:2rem;
+
+    padding:1.5rem 0;
+    border-top:1px solid var(--archive-line-weak);
+}
+
+.itinerary__day:first-child{ border-top:0; }
+
+.itinerary__label{
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+    line-height:1.9;
+}
+
+.itinerary__activities{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+.itinerary__activity{
+    position:relative;
+    padding:.25rem 0 .25rem 1.2rem;
+    font-size:1rem;
+    line-height:1.75;
+    color:var(--archive-text);
+}
+
+.itinerary__activity::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:1.1rem;
+    width:7px;
+    height:1px;
+    background:var(--archive-gold-dark);
+}
+
+.itinerary__none{
+    margin:0;
+    font-size:.92rem;
+    font-style:italic;
+    color:var(--archive-muted-dim);
+}
+
+/* --------------------------------------------------------------------------
+   The plan sheet — the shared .sheet drawer, plus the day editor
+   -------------------------------------------------------------------------- */
+.plan-day-editor{
+    margin-top:.4rem;
+}
+
+.plan-day{
+    padding:1.3rem 0;
+    border-top:1px solid var(--archive-line-weak);
+}
+
+.plan-day:first-child{ border-top:0; }
+
+.plan-day__head{
+    display:flex;
+    align-items:baseline;
+    gap:1rem;
+    margin-bottom:.9rem;
+}
+
+.plan-day__label{
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}
+
+.plan-day__empty{
+    margin:0;
+    font-size:.86rem;
+    font-style:italic;
+    color:var(--archive-muted-dim);
+}
+
+.plan-activity{
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    margin-bottom:.6rem;
+}
+
+.plan-activity__input{
+    flex:1;
+    min-width:0;
+
+    padding:.72rem .9rem;
+    border:1px solid var(--archive-line);
+    border-radius:var(--radius-sm);
+    background:rgba(255,255,255,.02);
+    color:var(--archive-text);
+    font-family:var(--sans);
+    font-size:.94rem;
+}
+
+.plan-activity__input::placeholder{ color:var(--archive-muted-dim); }
+
+.plan-activity__input:focus{
+    outline:none;
+    border-color:rgba(200,173,117,.42);
+    background:rgba(255,255,255,.035);
+}
+
+.plan-activity__remove{
+    flex:none;
+    width:2rem;
+    height:2rem;
+    border:0;
+    border-radius:50%;
+    background:none;
+    color:var(--archive-muted-dim);
+    font-size:1.1rem;
+    line-height:1;
+    transition:color .3s var(--ease-out),background .3s var(--ease-out);
+}
+
+.plan-activity__remove:hover{
+    color:#C08E77;
+    background:rgba(164,124,105,.12);
+}
+
+.plan-activity-add{
+    border:0;
+    background:none;
+    padding:0;
+    color:var(--archive-gold);
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    transition:color .35s var(--ease-out);
+}
+
+.plan-activity-add:hover{ color:var(--archive-gold-bright); }
+
+/* The duration is read, never typed. It is what the dates already say. */
+.plan-duration{
+    display:flex;
+    align-items:baseline;
+    gap:.8rem;
+
+    padding:1rem 1.1rem;
+    border:1px solid var(--archive-line-weak);
+    border-radius:var(--radius-sm);
+    background:rgba(255,255,255,.015);
+}
+
+.plan-duration__value{
+    font-family:var(--serif);
+    font-size:1.35rem;
+    letter-spacing:.04em;
+    color:var(--archive-gold-bright);
+}
+
+.plan-duration__note{
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+/* --------------------------------------------------------------------------
+   Confirmation — used by Delete and by the date change that drops days.
+   Deliberately in the page, not a browser dialog: a system alert cannot be
+   styled, cannot say which days are about to go, and blocks the whole tab.
+   -------------------------------------------------------------------------- */
+.confirm{
+    position:fixed;
+    inset:0;
+    z-index:calc(var(--z-modal) + 20);
+    display:grid;
+    place-items:center;
+    padding:1.5rem;
+}
+
+.confirm[hidden]{ display:none; }
+
+.confirm__scrim{
+    position:absolute;
+    inset:0;
+    background:rgba(6,7,6,.74);
+}
+
+.confirm__panel{
+    position:relative;
+    width:min(460px,100%);
+    padding:2rem 1.9rem 1.6rem;
+    border:1px solid rgba(200,173,117,.24);
+    border-radius:18px;
+    background:#191A17;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+
+.confirm__title{
+    margin:0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:1.5rem;
+    letter-spacing:.02em;
+}
+
+.confirm__note{
+    margin:1rem 0 0;
+    font-size:.95rem;
+    line-height:1.7;
+    color:var(--archive-muted);
+}
+
+.confirm__actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:1.4rem;
+    margin-top:1.8rem;
+}
+
+.confirm__cancel,
+.confirm__go{
+    border:0;
+    background:none;
+    padding:0;
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+}
+
+.confirm__cancel{ color:var(--archive-muted); }
+.confirm__cancel:hover{ color:var(--archive-text); }
+
+.confirm__go{ color:var(--archive-gold-bright); }
+.confirm__go:hover{ color:var(--archive-text); }
+
+.confirm__go--danger{ color:var(--archive-danger); }
+.confirm__go--danger:hover{ color:#C08E77; }
+
+/* --------------------------------------------------------------------------
+   Narrow screens
+   -------------------------------------------------------------------------- */
+@media (max-width:900px){
+    .future{
+        width:100vw;
+        height:100svh;
+        margin:0;
+        border:0;
+        border-radius:0;
+    }
+
+    .future__chrome{
+        flex-wrap:wrap;
+        gap:1rem;
+        padding:1.2rem 1.4rem;
+    }
+
+    .future__tabs{ margin-left:0; order:3; }
+
+    .future__scroll{ padding:2.4rem 1.4rem 4rem; }
+
+    .plan-row__button{
+        grid-template-columns:2.6rem minmax(0,1fr);
+        gap:1rem;
+    }
+
+    .plan-row__range{
+        grid-column:2;
+        text-align:left;
+        margin-top:.5rem;
+    }
+
+    .itinerary__day{
+        grid-template-columns:1fr;
+        gap:.7rem;
+    }
+}

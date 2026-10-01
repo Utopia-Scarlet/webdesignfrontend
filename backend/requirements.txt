@@ -1,0 +1,6 @@
+# Love Story — first backend phase.
+# Only what the upload actually needs; nothing speculative.
+fastapi
+uvicorn
+python-multipart
+bcrypt

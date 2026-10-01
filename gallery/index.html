@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Love Story — Private Archive</title>
+    <meta name="description"
+          content="A private archive. Unlock to walk through the moments.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&amp;family=Inter:wght@300;400;500&amp;display=swap">
+
+    <link rel="stylesheet" href="../tokens.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="../routes.js" defer></script>
+    <script src="../data/memory-fields.js" defer></script>
+    <script src="../data/memories.js" defer></script>
+    <!-- The one place the API address is defined, shared with every page. -->
+    <script src="../config.js" defer></script>
+    <script src="../hub/modules/api.js" defer></script>
+    <script src="../auth.js" defer></script>
+    <script src="../entry.js" defer></script>
+    <script src="script.js" defer></script>
+</head>
+
+<body class="gallery-page">
+
+    <!-- Opening sequence. The one thing kept from the old landing page: the
+         title arriving out of black before the room appears. -->
+    <div class="opening" id="opening" aria-hidden="true">
+        <p class="opening__brand">Love / Story</p>
+        <p class="opening__sub">Private Archive</p>
+    </div>
+
+    <main class="gallery" id="gallery">
+
+        <div class="ambient" aria-hidden="true">
+            <span class="ambient__zone ambient__zone--centre"></span>
+            <span class="ambient__zone ambient__zone--film"></span>
+        </div>
+
+        <!-- Two films, built by script.js.
+             .strip--bg   = background film: atmosphere only, not interactive.
+             .strip--main = primary film: the photographs you can actually use. -->
+        <div class="gallery__stage">
+            <div class="strip strip--bg"><div class="strip__track"></div></div>
+            <div class="strip strip--main"><div class="strip__track"></div></div>
+        </div>
+
+        <header class="gallery__bar gallery__bar--top">
+            <span class="gallery__brand">Love / Story</span>
+
+            <div class="gallery__account">
+                <button class="unlock-button" type="button" id="unlockButton"
+                        aria-haspopup="dialog" aria-controls="unlockOverlay">
+                    <span class="unlock-button__label" data-unlock-label>Unlock</span>
+                    <span class="unlock-button__arrow" aria-hidden="true">&#8599;</span>
+                </button>
+                <span class="gallery__account-note" data-account-note>Private archive</span>
+            </div>
+        </header>
+
+        <!-- Who is signed in, and the one thing they can do about it from
+             here. Managing spaces — members, invitations, joining — belongs to
+             the Profile inside Our Space, which is where the archive is; the
+             Entrance shows who you are and the way out. -->
+        <div class="account" id="accountPanel" hidden>
+            <button class="account__scrim" type="button" id="accountScrim" tabindex="-1" aria-label="Close"></button>
+            <div class="account__panel" role="dialog" aria-modal="true" aria-label="Account">
+                <p class="account__eyebrow">Signed in</p>
+                <p class="account__name" id="accountName">&mdash;</p>
+                <p class="account__role" id="accountRole">&mdash;</p>
+
+                <!-- Which space this sign-in is looking at. One line, because
+                     that is all a landing page needs to say about it. -->
+                <p class="account__partner" id="accountSpace" hidden></p>
+
+                <a class="account__action" id="accountManage" href="../hub/index.html">
+                    Manage spaces <span aria-hidden="true">&rarr;</span>
+                </a>
+                <button class="account__action" type="button" id="accountSignOut">
+                    Sign out <span aria-hidden="true">&rarr;</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="gallery__center">
+            <p class="gallery__kicker">A collection of moments</p>
+
+            <h1 class="gallery__title">
+                <span class="gallery__title-mask"><span>Our</span></span>
+                <span class="gallery__title-mask"><span>Story</span></span>
+            </h1>
+
+            <p class="gallery__range">2025 &mdash; Present</p>
+
+            <noscript>
+                <p class="gallery__fallback">
+                    The films need JavaScript.
+                    <a href="../hub/index.html">Enter the story &rarr;</a>
+                </p>
+            </noscript>
+        </div>
+
+        <footer class="gallery__bar gallery__bar--bottom">
+            <span class="gallery__hint" data-hint>Click a memory to unlock</span>
+            <span class="gallery__arrow" aria-hidden="true">&darr;</span>
+        </footer>
+
+        <p class="gallery__note" id="galleryNote" role="status" aria-live="polite"></p>
+
+    </main>
+
+    <!-- ======================================================================
+         Unlock. Not a login page: the archive dims behind it and the form is
+         part of the same room.
+         ====================================================================== -->
+    <div class="unlock" id="unlockOverlay" hidden>
+        <button class="unlock__scrim" type="button" id="unlockScrim" tabindex="-1" aria-label="Close"></button>
+
+        <!-- Not a card: a very large, soft pool of darkness that gives the form
+             somewhere to sit. Its edges dissolve into the room. -->
+        <div class="unlock__veil" aria-hidden="true"></div>
+
+        <button class="unlock__close" type="button" id="unlockClose" aria-label="Close">&times;</button>
+
+        <div class="unlock__panel" role="dialog" aria-modal="true"
+             aria-labelledby="unlockTitle" aria-describedby="unlockNote">
+
+            <form class="unlock__form" id="unlockForm" novalidate>
+                <p class="unlock__eyebrow" id="unlockTitle">Our Story</p>
+                <p class="unlock__lead" id="unlockLead">Unlock our archive.</p>
+
+                <!-- Shown only for the very first visit, while the archive has
+                     no owner yet. Same room, same form, one extra field. -->
+                <label class="unlock__label" for="unlockName" data-setup-only>Display name</label>
+                <input class="unlock__input" id="unlockName" name="display_name"
+                       type="text" autocomplete="name" spellcheck="false" data-setup-only>
+
+                <label class="unlock__label" for="unlockUser" id="unlockUserLabel">Username</label>
+                <input class="unlock__input" id="unlockUser" name="username"
+                       type="text" autocomplete="username" spellcheck="false">
+
+                <label class="unlock__label" for="unlockPass">Password</label>
+                <input class="unlock__input" id="unlockPass" name="password"
+                       type="password" autocomplete="current-password">
+
+                <!-- Only when creating an account: a typo here would lock
+                     somebody out of the archive on their first day. -->
+                <label class="unlock__label" for="unlockConfirm"
+                       id="unlockConfirmLabel" data-register-only>Confirm password</label>
+                <input class="unlock__input" id="unlockConfirm" name="confirm"
+                       type="password" autocomplete="new-password" data-register-only>
+
+                <p class="unlock__error" id="unlockError" role="alert" aria-live="polite"></p>
+
+                <button class="unlock__submit" type="submit" id="unlockSubmit">
+                    <span class="unlock__submit-label" data-submit-label>Enter</span>
+                    <span class="unlock__submit-arrow" aria-hidden="true">&rarr;</span>
+                    <span class="unlock__keyline" aria-hidden="true"></span>
+                </button>
+
+                <p class="unlock__note" id="unlockNote">A private space for us.</p>
+            </form>
+
+            <!-- Signing in and creating an account are two doors into the same
+                 room. This is the way between them, and it says exactly two
+                 things: the mode you are IN (a muted word — not a destination,
+                 not clickable) and the mode you could go TO (the gold control).
+                 The control is a real button so the keyboard can reach it; it
+                 used to be a <p> with a click handler, which no Tab could
+                 find. -->
+            <p class="unlock__switch" id="unlockModeSwitch">
+                <span class="unlock__mode" id="unlockModeCurrent">Sign in</span>
+                <button class="unlock__mode-action" type="button"
+                        id="unlockModeAction" data-target="register">Create account</button>
+            </p>
+
+            <!-- Retired: this archive is private now. The API refuses shared
+                 content to anyone without a session, so a guest door would lead
+                 only to empty pages. Kept out of the page entirely rather than
+                 hidden. -->
+            <button class="unlock__guest" type="button" id="unlockGuest" hidden>
+                Continue as guest
+                <span class="unlock__guest-arrow" aria-hidden="true">&rarr;</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="grain" aria-hidden="true"></div>
+
+</body>
+
+</html>

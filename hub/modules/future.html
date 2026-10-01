@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Plan the Future — Love Story</title>
+    <meta name="description"
+          content="The trips we have not taken yet, and the ones we have — a private plan for two.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&amp;family=Inter:wght@300;400;500&amp;display=swap">
+
+    <link rel="stylesheet" href="../../tokens.css">
+    <link rel="stylesheet" href="future.css">
+    <!-- The Add/Edit sheet is the shared drawer component, not part of this
+         page — the same panel the Memory Library uses. -->
+    <link rel="stylesheet" href="memory-form.css">
+
+    <script src="../../data/future-plans.js" defer></script>
+    <script src="../../config.js" defer></script>
+    <script src="api.js" defer></script>
+    <script src="../../auth.js" defer></script>
+    <script src="../../entry.js" defer></script>
+    <script src="../../entry-guard.js" defer></script>
+    <script src="future.js" defer></script>
+</head>
+
+<body class="future-page">
+
+    <div class="future" id="future">
+
+        <header class="future__chrome">
+            <a class="future__brand" href="../index.html">Love / Story</a>
+            <a class="future__back" href="../index.html">
+                <span aria-hidden="true">&larr;</span> Our Space
+            </a>
+
+            <div class="future__tabs" id="futureTabs" role="tablist" aria-label="Plans">
+                <button class="future__tab is-on" type="button" role="tab"
+                        id="tabUpcoming" data-view="upcoming" aria-selected="true"
+                        aria-controls="futureScroll">Upcoming</button>
+                <button class="future__tab" type="button" role="tab"
+                        id="tabCompleted" data-view="completed" aria-selected="false"
+                        aria-controls="futureScroll">Completed</button>
+            </div>
+
+            <!-- Editors only. The API refuses a write from anyone else
+                 whatever this button believes. -->
+            <button class="future__new" type="button" id="newPlanButton" hidden>
+                <span aria-hidden="true">+</span> New Plan
+            </button>
+        </header>
+
+        <main class="future__scroll" id="futureScroll">
+            <div class="future__intro">
+                <p class="future__eyebrow">Plan the Future</p>
+                <h1 class="future__title" id="futureTitle">Upcoming</h1>
+                <p class="future__stats" id="futureStats"></p>
+            </div>
+
+            <p class="future__note" id="futureLoading">Reading the plans&hellip;</p>
+
+            <p class="future__note future__note--error" id="futureError" hidden>
+                <span>Plans temporarily unavailable.</span>
+                <button class="future__retry" type="button" id="futureRetry">Retry &rarr;</button>
+            </p>
+
+            <p class="future__note future__note--empty" id="futureEmpty" hidden></p>
+
+            <ol class="plan-list" id="planList"></ol>
+        </main>
+    </div>
+
+    <!-- ======================================================================
+         One plan, opened. The list is an index; this is the plan itself.
+         ====================================================================== -->
+    <div class="plan-detail" id="planDetail" hidden>
+        <div class="plan-detail__scrim" id="planDetailScrim" aria-hidden="true"></div>
+
+        <header class="plan-detail__bar">
+            <button class="plan-detail__back" type="button" id="planDetailBack">
+                <span aria-hidden="true">&larr;</span> Back
+            </button>
+
+            <div class="plan-detail__tools">
+                <button class="plan-detail__edit" type="button" id="planEditButton" hidden>Edit Plan</button>
+                <button class="plan-detail__delete" type="button" id="planDeleteButton" hidden>Delete Plan</button>
+            </div>
+        </header>
+
+        <div class="plan-detail__stage">
+            <article class="plan-archive" id="planArchive"></article>
+        </div>
+    </div>
+
+    <!-- The plan sheet and the confirmation dialog are injected by future.js,
+         so there is exactly one of each in the document. -->
+
+    <div class="grain" aria-hidden="true"></div>
+
+</body>
+
+</html>

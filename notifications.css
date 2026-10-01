@@ -1,0 +1,166 @@
+/* ==========================================================================
+   LoveStory — the Notification Center
+
+   The bell in the Hub header and the panel behind it. The same drawer
+   geometry as the Profile, in a narrower column, because a notification is a
+   sentence and a time rather than a list of things to manage.
+
+   Depends on tokens.css. The trigger's own styling lives in hub/style.css,
+   where the header is, since that is what it has to line up with.
+   ========================================================================== */
+
+.notifications{
+    position:fixed;
+    inset:0;
+    z-index:var(--z-modal);
+}
+
+.notifications[hidden]{ display:none; }
+
+.notifications__scrim{
+    position:absolute;
+    inset:0;
+    appearance:none;
+    border:0;
+    padding:0;
+    background:rgba(4,5,4,.62);
+    opacity:0;
+    transition:opacity .4s var(--ease-out);
+}
+
+.notifications.is-open .notifications__scrim{ opacity:1; }
+
+.notifications__panel{
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+
+    display:flex;
+    flex-direction:column;
+    width:min(100%, 380px);
+
+    background:#141512;
+    border-left:1px solid var(--archive-line);
+
+    transform:translateX(100%);
+    transition:transform .5s cubic-bezier(.22,1,.36,1);
+}
+
+.notifications.is-open .notifications__panel{ transform:none; }
+
+.notifications__head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    padding:1.4rem 1.6rem;
+    border-bottom:1px solid var(--archive-line);
+}
+
+.notifications__eyebrow{
+    margin:0;
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}
+
+.notifications__mark{
+    appearance:none;
+    border:0;
+    background:none;
+    padding:0;
+    color:var(--archive-muted);
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    cursor:pointer;
+}
+
+.notifications__mark:hover{ color:var(--archive-gold-bright); }
+.notifications__mark[disabled]{ color:var(--archive-muted-dim); cursor:default; }
+
+.notifications__controls{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+}
+
+.notifications__close{
+    width:36px;
+    height:36px;
+    display:grid;
+    place-items:center;
+    appearance:none;
+    border:0;
+    background:none;
+    color:var(--archive-muted);
+    font-size:1.1rem;
+    cursor:pointer;
+}
+
+.notifications__close:hover{ color:var(--archive-text); }
+
+.notifications__scroll{
+    flex:1;
+    overflow-y:auto;
+    padding:1.2rem 1.6rem 1.6rem;
+}
+
+.notifications__note{
+    margin:.8rem 0 0;
+    max-width:32ch;
+    font-size:12px;
+    line-height:1.6;
+    color:var(--archive-muted-dim);
+}
+
+.notifications__list{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+.notifications__item{
+    display:grid;
+    grid-template-columns:1.2rem minmax(0,1fr);
+    gap:.8rem;
+    padding:1rem 0;
+    border-bottom:1px solid var(--archive-line-weak);
+}
+
+.notifications__icon{
+    color:var(--archive-gold-dark);
+    font-size:11px;
+    line-height:1.6;
+}
+
+.notifications__item.is-unread .notifications__icon{ color:var(--archive-gold-bright); }
+
+.notifications__title{
+    margin:0;
+    font-family:var(--serif);
+    font-size:1.05rem;
+    font-weight:300;
+    line-height:1.4;
+    color:var(--archive-muted);
+}
+
+.notifications__item.is-unread .notifications__title{ color:var(--archive-text); }
+
+.notifications__body{
+    margin:.35rem 0 0;
+    font-size:12px;
+    line-height:1.55;
+    color:var(--archive-muted-dim);
+}
+
+.notifications__meta{
+    margin:.5rem 0 0;
+    font-size:10px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--archive-gold-dark);
+}

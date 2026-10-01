@@ -1,0 +1,294 @@
+/* ==========================================================================
+   LoveStory — the privacy forms
+
+   Setup, unlock, and the modal that carries them over a half-written memory.
+   Same world as everything else: near-black, ivory, champagne gold, no red, no
+   shield, no warning icon. A second door, not a different building.
+
+   Depends on tokens.css.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   The form itself, wherever it is mounted
+   -------------------------------------------------------------------------- */
+.privacy__inner{
+    display:block;
+    margin:1.8rem 0 0;
+    max-width:26rem;
+}
+
+.privacy__eyebrow{
+    margin:0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}
+
+.privacy__title{
+    margin:.9rem 0 0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(1.5rem, 3.4vw, 2.1rem);
+    line-height:1.15;
+}
+
+.privacy__note{
+    margin:1rem 0 0;
+    max-width:42ch;
+    font-size:.95rem;
+    line-height:1.75;
+    color:var(--archive-muted);
+}
+
+.privacy__field{ display:block; margin:1.3rem 0 0; }
+
+.privacy__field-label{
+    display:block;
+    margin-bottom:.5rem;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--archive-gold-dark);
+}
+
+.privacy__input{
+    box-sizing:border-box;
+    width:100%;
+    appearance:none;
+    border:1px solid var(--archive-line);
+    border-radius:2px;
+    background:rgba(255,255,255,.02);
+    padding:.75rem .85rem;
+    color:var(--archive-text);
+    font-family:var(--sans);
+    font-size:14px;
+    letter-spacing:.04em;
+}
+
+.privacy__input:focus{
+    outline:none;
+    border-color:var(--archive-gold-dark);
+}
+
+.privacy__error{
+    margin:.9rem 0 0;
+    font-size:12px;
+    line-height:1.6;
+    color:var(--archive-danger);
+}
+
+.privacy__error:empty{ display:none; }
+
+.privacy__actions{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:1.2rem;
+    margin:1.8rem 0 0;
+}
+
+.privacy__submit{
+    appearance:none;
+    border:1px solid var(--archive-line);
+    border-radius:2px;
+    background:none;
+    padding:.75rem 1.1rem;
+    color:var(--archive-gold-bright);
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:color .3s var(--ease-out), border-color .3s var(--ease-out);
+}
+
+.privacy__submit:hover{ color:var(--archive-text); border-color:var(--archive-gold-dark); }
+.privacy__submit:focus-visible{ outline:1px solid var(--archive-gold); outline-offset:3px; }
+.privacy__submit[disabled]{ color:var(--archive-muted-dim); cursor:default; }
+
+.privacy__cancel{
+    appearance:none;
+    border:0;
+    background:none;
+    padding:0;
+    color:var(--archive-muted);
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    cursor:pointer;
+}
+
+.privacy__cancel:hover{ color:var(--archive-text); }
+.privacy__cancel:focus-visible{ outline:1px solid var(--archive-gold); outline-offset:3px; }
+
+/* --------------------------------------------------------------------------
+   The modal: setup or unlock over whatever the page was doing
+
+   Used when somebody picks PRIVATE in the memory sheet and has no password yet,
+   or has one and has not opened the archive this session. The sheet stays
+   exactly as it was underneath — nothing typed is lost.
+   -------------------------------------------------------------------------- */
+.privacy-modal{
+    position:fixed;
+    inset:0;
+    z-index:calc(var(--z-modal) + 10);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:1.5rem;
+    opacity:0;
+    transition:opacity .3s var(--ease-out);
+}
+
+.privacy-modal.is-open{ opacity:1; }
+
+.privacy-modal__scrim{
+    position:absolute;
+    inset:0;
+    appearance:none;
+    border:0;
+    padding:0;
+    background:rgba(4,5,4,.76);
+    cursor:default;
+}
+
+.privacy-modal__panel{
+    position:relative;
+    box-sizing:border-box;
+    width:min(30rem, 100%);
+    max-height:calc(100svh - 3rem);
+    overflow-y:auto;
+    padding:clamp(1.6rem, 4vw, 2.4rem);
+    background:var(--archive-surface);
+    border:1px solid var(--archive-line);
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+
+.privacy-modal__panel .privacy__inner{ margin-top:0; }
+
+/* --------------------------------------------------------------------------
+   The audience control — who can see this private memory
+
+   Three presets and a row per person. Never big radio cards: a list of names
+   with three small words beside each one is quieter and faster to read.
+   -------------------------------------------------------------------------- */
+.audience{ margin:1.4rem 0 0; }
+
+.audience__question{
+    margin:0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--archive-gold-dark);
+}
+
+.audience__presets{
+    display:flex;
+    flex-direction:column;
+    gap:.55rem;
+    margin:1rem 0 0;
+}
+
+.audience__preset{
+    display:flex;
+    align-items:center;
+    gap:.7rem;
+    cursor:pointer;
+    font-family:var(--sans);
+    font-size:13px;
+    color:var(--archive-text);
+}
+
+.audience__radio{
+    appearance:none;
+    width:14px;
+    height:14px;
+    margin:0;
+    flex:0 0 auto;
+    border:1px solid var(--archive-gold-dark);
+    border-radius:50%;
+    background:none;
+    cursor:pointer;
+    position:relative;
+}
+
+.audience__radio:checked::after{
+    content:"";
+    position:absolute;
+    inset:3px;
+    border-radius:50%;
+    background:var(--archive-gold-bright);
+}
+
+.audience__radio:focus-visible{ outline:1px solid var(--archive-gold); outline-offset:3px; }
+
+.audience__preset-label{ line-height:1.4; }
+
+.audience__detail{ margin:1.2rem 0 0; }
+
+.audience__note{
+    margin:0;
+    max-width:44ch;
+    font-size:13px;
+    line-height:1.7;
+    color:var(--archive-muted);
+}
+
+/* One member, one line: name on the left, NONE / VIEW / EDIT on the right. */
+/* A row is a name and three small words. On a narrow screen the three words
+   drop to their own line rather than pushing the name off the panel. */
+.audience__row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:.4rem 1rem;
+    padding:.7rem 0;
+    border-bottom:1px solid var(--archive-line-weak);
+}
+
+.audience__name{
+    flex:1 1 auto;
+    min-width:0;
+    overflow-wrap:anywhere;
+}
+
+.audience__choices{ flex:0 0 auto; flex-wrap:wrap; }
+
+.audience__name{
+    font-family:var(--serif);
+    font-size:1.1rem;
+    color:var(--archive-text);
+}
+
+.audience__choices{ display:flex; gap:1rem; }
+
+.audience__choice{
+    display:flex;
+    align-items:center;
+    gap:.4rem;
+    cursor:pointer;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.audience__choice:has(.audience__radio:checked){ color:var(--archive-gold-bright); }
+
+.audience__snapshot{
+    margin:1rem 0 0;
+    max-width:44ch;
+    font-family:var(--sans);
+    font-size:11px;
+    line-height:1.6;
+    color:var(--archive-muted-dim);
+}
+
+.audience__snapshot:empty{ display:none; }

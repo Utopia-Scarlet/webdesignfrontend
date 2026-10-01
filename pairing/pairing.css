@@ -1,0 +1,65 @@
+/* ==========================================================================
+   LoveStory — the old pairing address
+
+   All that is left of the pairing room's styling: the shell the redirect is
+   drawn in, so the half-second before the browser leaves does not flash. The
+   account button, the cards, the code fields, the forms and the success
+   state went with the room itself — there is nothing left for them to style,
+   and dead rules are the same lie as dead copy.
+
+   Depends on ../tokens.css.
+   ========================================================================== */
+
+.pairing-page{
+    background:#0B0C0A;
+    color:var(--archive-text);
+    min-height:100svh;
+}
+
+body.pairing-page .grain{ opacity:.025; }
+
+.pairing{
+    display:flex;
+    flex-direction:column;
+    min-height:100svh;
+}
+
+/* --------------------------------------------------------------------------
+   Chrome — the wordmark
+   -------------------------------------------------------------------------- */
+.pairing__chrome{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    padding:1.6rem clamp(1.4rem,4vw,3rem);
+}
+
+.pairing__brand{
+    font-family:var(--serif);
+    font-size:1.05rem;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   The stage — one line while the resolver answers
+   -------------------------------------------------------------------------- */
+.pairing__stage{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+    width:min(620px, 100% - 3rem);
+    margin:0 auto;
+    padding:2rem 0 5rem;
+}
+
+.pairing__loading{
+    margin:0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Love Story — An Archive of Memories</title>
+    <meta name="description"
+          content="Every memory deserves to be remembered. A personal archive of places, moments and memories.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&amp;family=Inter:wght@300;400;500&amp;display=swap">
+
+    <link rel="stylesheet" href="tokens.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body class="hero-page">
+
+    <main class="hero">
+
+        <!-- Layer 1: the photograph -->
+        <div class="hero__media" aria-hidden="true"></div>
+        <div class="hero__scrim" aria-hidden="true"></div>
+
+        <!-- Layer 2: top navigation -->
+        <header class="hero__top">
+            <div class="hero__brand">
+                <span class="hero__brand-name">Love / Story</span>
+                <span class="hero__brand-sub micro">Archive</span>
+            </div>
+
+            <button class="login-button" type="button">
+                <span>Login</span>
+                <span class="login-button__arrow" aria-hidden="true">&nearr;</span>
+            </button>
+        </header>
+
+        <!-- Layer 3: the editorial composition -->
+        <div class="hero__body">
+
+            <p class="hero__caption">
+                Every memory<br>deserves to be remembered.
+            </p>
+
+            <h1 class="hero__title">
+                <span class="hero__title-mask hero__title-mask--love">
+                    <span class="hero__title-love">Love</span>
+                </span>
+                <span class="hero__title-mask hero__title-mask--story">
+                    <span class="hero__title-story">Story</span>
+                </span>
+            </h1>
+
+        </div>
+
+        <!-- Layer 4: footer metadata + the entrance -->
+        <footer class="hero__bottom">
+
+            <div class="hero__meta micro">
+                <span class="hero__meta-index">01</span>
+                <span class="hero__meta-label">Our Archive</span>
+            </div>
+
+            <button class="enter-button" type="button">
+                <span class="enter-button__text">
+                    <span class="enter-button__label">Begin the Story</span>
+                    <span class="enter-button__sub">Explore our memories</span>
+                </span>
+                <span class="enter-button__arrow" aria-hidden="true">&rarr;</span>
+            </button>
+
+        </footer>
+
+    </main>
+
+    <!-- Login dialog: same behaviour and class names as before -->
+    <div class="overlay-model">
+        <div class="login-model" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+
+            <div class="buttoncontiner">
+                <button class="close-button" type="button" aria-label="Close login">&times;</button>
+            </div>
+
+            <form class="loginblock" novalidate>
+                <h2 class="logintitle" id="loginTitle">Login</h2>
+
+                <label class="usernamelabel" for="loginUsername">username</label>
+                <input class="logininput1" id="loginUsername" name="username"
+                       type="text" autocomplete="username" spellcheck="false">
+
+                <label class="passwordlabel" for="loginPassword">password</label>
+                <input class="logininput2" id="loginPassword" name="password"
+                       type="password" autocomplete="current-password">
+
+                <p class="login-error" role="alert" aria-live="polite"></p>
+
+                <div class="loginbuttoncontiner">
+                    <button class="login" type="submit">
+                        LOGIN!
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="grain" aria-hidden="true"></div>
+
+</body>
+
+</html>

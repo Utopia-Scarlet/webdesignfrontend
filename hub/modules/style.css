@@ -1,0 +1,81 @@
+/* ==========================================================================
+   LoveStory — placeholder pages for the five hub modules
+
+   Deliberately minimal: each page exists so the hub has a real destination
+   and so the module has a home to grow into. Replace the contents of
+   individual pages as they get built; this shared file can stay.
+   ========================================================================== */
+
+.module-page{
+    /* Matches the hub's dark archive theme. */
+    --page-bg:#10110F;
+    --page-ink:#E8E3D8;
+    --page-ink-soft:#98968E;
+    --page-blue:#C8AD75;
+    --page-line:rgba(200,173,117,.16);
+
+    background:var(--page-bg);
+    color:var(--page-ink);
+    min-height:100svh;
+}
+
+body.module-page .grain{
+    opacity:.022;
+}
+
+.placeholder{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    min-height:100svh;
+    padding:clamp(2rem, 9vw, 9rem);
+}
+
+.placeholder__back{
+    position:absolute;
+    top:clamp(1.2rem, 3.4vh, 2.2rem);
+    left:clamp(1.5rem, 9vw, 9rem);
+
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--page-ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+
+    transition:color .4s var(--ease-out), border-color .4s var(--ease-out);
+}
+
+.placeholder__back:hover{
+    color:var(--page-blue);
+    border-bottom-color:var(--page-line);
+}
+
+.placeholder__eyebrow{
+    margin:0 0 1.2rem;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.4em;
+    text-transform:uppercase;
+    color:var(--page-ink-soft);
+}
+
+.placeholder__title{
+    margin:0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(2.6rem, 8vw, 6rem);
+    line-height:1;
+    letter-spacing:-.01em;
+    color:var(--page-ink);
+}
+
+.placeholder__note{
+    max-width:26rem;
+    margin:1.6rem 0 0;
+    font-size:.95rem;
+    font-weight:300;
+    line-height:1.8;
+    color:var(--page-ink-soft);
+}

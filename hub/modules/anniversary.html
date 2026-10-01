@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Anniversaries — Love Story</title>
+    <meta name="description"
+          content="The dates that come round every year, and how long until the next one.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&amp;family=Inter:wght@300;400;500&amp;display=swap">
+
+    <link rel="stylesheet" href="../../tokens.css">
+    <link rel="stylesheet" href="anniversary.css">
+    <!-- The Add/Edit sheet is the shared drawer component, not part of this
+         page — the same panel the Library and Plan the Future use. -->
+    <link rel="stylesheet" href="memory-form.css">
+
+    <script src="../../data/anniversaries.js" defer></script>
+    <script src="../../config.js" defer></script>
+    <script src="api.js" defer></script>
+    <script src="../../auth.js" defer></script>
+    <script src="../../entry.js" defer></script>
+    <script src="../../entry-guard.js" defer></script>
+    <script src="anniversary.js" defer></script>
+</head>
+
+<body class="anniv-page">
+
+    <div class="anniv" id="anniv">
+
+        <header class="anniv__chrome">
+            <a class="anniv__brand" href="../index.html">Love / Story</a>
+            <a class="anniv__back" href="../index.html">
+                <span aria-hidden="true">&larr;</span> Our Space
+            </a>
+
+            <p class="anniv__count" id="annivCount"></p>
+
+            <!-- Editors only. The API refuses a write from anyone else
+                 whatever this button believes. -->
+            <button class="anniv__new" type="button" id="newAnniversaryButton" hidden>
+                <span aria-hidden="true">+</span> New Anniversary
+            </button>
+        </header>
+
+        <main class="anniv__scroll" id="annivScroll">
+            <div class="anniv__intro">
+                <p class="anniv__eyebrow">The dates that come round</p>
+                <h1 class="anniv__title" id="annivTitle">Anniversaries</h1>
+                <p class="anniv__stats" id="annivStats"></p>
+            </div>
+
+            <p class="anniv__note" id="annivLoading">Reading the dates&hellip;</p>
+
+            <p class="anniv__note anniv__note--error" id="annivError" hidden>
+                <span>Dates temporarily unavailable.</span>
+                <button class="anniv__retry" type="button" id="annivRetry">Retry &rarr;</button>
+            </p>
+
+            <p class="anniv__note anniv__note--empty" id="annivEmpty" hidden></p>
+
+            <ol class="anniv-list" id="annivList"></ol>
+        </main>
+    </div>
+
+    <!-- ======================================================================
+         One date, opened.
+         ====================================================================== -->
+    <div class="anniv-detail" id="annivDetail" hidden>
+        <div class="anniv-detail__scrim" id="annivDetailScrim" aria-hidden="true"></div>
+
+        <header class="anniv-detail__bar">
+            <button class="anniv-detail__back" type="button" id="annivDetailBack">
+                <span aria-hidden="true">&larr;</span> Back
+            </button>
+
+            <div class="anniv-detail__tools">
+                <button class="anniv-detail__edit" type="button" id="annivEditButton" hidden>Edit Anniversary</button>
+                <button class="anniv-detail__delete" type="button" id="annivDeleteButton" hidden>Delete Anniversary</button>
+            </div>
+        </header>
+
+        <div class="anniv-detail__stage" id="annivDetailStage">
+            <article class="anniv-archive" id="annivArchive"></article>
+        </div>
+    </div>
+
+    <!-- The sheet and the confirmation are injected by anniversary.js, so
+         there is exactly one of each in the document. -->
+
+    <div class="grain" aria-hidden="true"></div>
+
+</body>
+
+</html>

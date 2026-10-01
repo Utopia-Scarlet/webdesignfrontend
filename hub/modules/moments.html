@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Moments — Our Archive</title>
+    <meta name="description" content="A private photo archive: browse the memories, open one, read the day.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&amp;family=Inter:wght@300;400;500&amp;display=swap">
+
+    <link rel="stylesheet" href="../../tokens.css">
+    <link rel="stylesheet" href="moments.css">
+    <!-- The Add Memory sheet is a shared component, not part of the album. -->
+    <link rel="stylesheet" href="memory-form.css">
+    <!-- The privacy forms and the audience control: the same ones the Private
+         Archive uses, so "set up a privacy password" looks the same wherever
+         somebody meets it. -->
+    <link rel="stylesheet" href="../../privacy.css">
+
+    <script src="../../data/memory-fields.js" defer></script>
+    <script src="../../data/memories.js" defer></script>
+    <script src="../../data/countries.js" defer></script>
+    <script src="../../config.js" defer></script>
+    <script src="api.js" defer></script>
+    <script src="../../auth.js" defer></script>
+    <script src="../../entry.js" defer></script>
+    <script src="../../entry-guard.js" defer></script>
+    <!-- The second lock, and who may see a private memory. Both are loaded
+         before the sheet, which draws its privacy section from them. -->
+    <script src="../../privacy.js" defer></script>
+    <script src="../../privacy-audience.js" defer></script>
+    <script src="memory-form.js" defer></script>
+    <script src="moments.js" defer></script>
+</head>
+
+<body class="album-page">
+
+    <!-- The album sits inside the page as one bounded room. -->
+    <div class="album" id="album">
+
+        <!-- Sidebar — the album's information architecture, not a navbar. -->
+        <aside class="sidebar" id="sidebar" aria-label="Library">
+            <!-- Two ways home, both explicit: the wordmark and the arrow.
+                 Both return to the Hub, never to the Entrance. -->
+            <div class="sidebar__head">
+                <a class="sidebar__brand" href="../index.html">Love / Story</a>
+                <a class="sidebar__back" href="../index.html">
+                    <span aria-hidden="true">&larr;</span> Our Space
+                </a>
+            </div>
+
+            <nav class="sidebar__nav" id="sidebarNav"></nav>
+
+            <!-- The Library is where memories are written. This is the primary
+                 entry point; the header repeats it so it is never hunted for. -->
+            <button class="sidebar__add" type="button" id="addMemoryButton">
+                <span aria-hidden="true">+</span> Add Memory
+            </button>
+        </aside>
+
+        <button class="sidebar-toggle" type="button" id="sidebarToggle"
+                aria-expanded="false" aria-controls="sidebar">Library</button>
+
+        <!-- Library -->
+        <main class="library" id="library">
+            <!-- The header never scrolls: only .library__scroll does, so this
+                 stays put and + Add Memory is always one glance away. -->
+            <header class="library__head">
+                <div class="library__identity">
+                    <p class="library__eyebrow" id="libraryEyebrow">Library</p>
+                    <h1 class="library__title" id="libraryTitle">All Memories</h1>
+                    <p class="library__stats" id="libraryStats"></p>
+                </div>
+
+                <button class="library__add" type="button" id="libraryAddButton">
+                    <span aria-hidden="true">+</span> Add Memory
+                </button>
+            </header>
+
+            <div class="library__scroll" id="libraryScroll"></div>
+
+            <p class="library__empty" id="libraryEmpty" hidden>
+                Nothing here yet. <button type="button" data-open-add>Add a memory</button>.
+            </p>
+        </main>
+    </div>
+
+    <!-- ======================================================================
+         One memory, opened.
+         ====================================================================== -->
+    <div class="detail" id="detail" hidden>
+        <div class="detail__scrim" aria-hidden="true"></div>
+
+        <header class="detail__bar">
+            <button class="detail__back" type="button" id="detailBack">
+                <span aria-hidden="true">&larr;</span> Back
+            </button>
+            <span class="detail__count" id="detailCount"></span>
+        </header>
+
+        <div class="detail__stage">
+            <button class="detail__nav detail__nav--prev" type="button" id="detailPrev"
+                    aria-label="Previous photo">&#10094;</button>
+
+            <!-- ONE archive object: the photograph and everything we know
+                 about it live inside a single restrained frame, so the image
+                 and its metadata read as one thing rather than two. -->
+            <article class="memory-archive" id="memoryArchive">
+                <figure class="detail__frame" id="detailFrame">
+                    <img id="detailImage" alt="">
+                </figure>
+
+                <!-- A memory may legitimately have no photograph. Say so
+                     plainly instead of showing an empty mount. -->
+                <p class="detail__nophoto" id="detailNoPhoto" hidden>
+                    No photograph for this memory yet.
+                </p>
+
+                <div class="detail__info" id="detailInfo"></div>
+            </article>
+
+            <button class="detail__nav detail__nav--next" type="button" id="detailNext"
+                    aria-label="Next photo">&#10095;</button>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         Add Memory is injected by memory-form.js, so the album and the Memory
+         Map cannot drift apart.
+         ====================================================================== -->
+
+    <div class="grain" aria-hidden="true"></div>
+
+</body>
+
+</html>

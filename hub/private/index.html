@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- No memory title reaches the tab or the history: the page is the Private
+         Archive, and what is inside it is nobody else's business, including
+         whoever reads over a shoulder or opens the browser's history. -->
+    <title>Private Archive — Love Story</title>
+    <meta name="description" content="A second lock on the memories kept out of the archive.">
+    <meta name="robots" content="noindex">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&amp;family=Inter:wght@300;400;500&amp;display=swap">
+
+    <link rel="stylesheet" href="../../tokens.css">
+    <link rel="stylesheet" href="private.css">
+    <!-- The privacy forms and the audience control, shared with the memory
+         sheet so a password prompt looks the same wherever it appears. -->
+    <link rel="stylesheet" href="../../privacy.css">
+    <!-- The Add/Edit Memory sheet is the shared component, here in its private
+         scope. The stylesheet is the same one the Library uses, so a memory
+         looks like a memory wherever it is written. -->
+    <link rel="stylesheet" href="../modules/memory-form.css">
+
+    <script src="../../routes.js" defer></script>
+    <script src="../../config.js" defer></script>
+    <!-- The one HTTP client, with the private-archive calls on it. -->
+    <script src="../modules/api.js" defer></script>
+    <script src="../../auth.js" defer></script>
+    <script src="../../entry.js" defer></script>
+    <!-- The second lock: status, setup, unlock, lock. -->
+    <script src="../../privacy.js" defer></script>
+    <script src="../../privacy-audience.js" defer></script>
+    <!-- The field lists the shared form offers (weather, mood, collections).
+         Pure data, no store: this page must not load the ordinary archive's
+         store, because the ordinary store is where ordinary memories live and
+         this page is the one place that must never hold one. -->
+    <script src="../../data/memory-fields.js" defer></script>
+    <script src="../../data/countries.js" defer></script>
+    <script src="../modules/memory-form.js" defer></script>
+    <!-- The private memories themselves. Loaded by nothing else. -->
+    <script src="store.js" defer></script>
+    <script src="private.js" defer></script>
+</head>
+
+<body class="private-page">
+
+    <main class="private" id="privateRoot">
+        <p class="private__loading">One moment&hellip;</p>
+    </main>
+
+    <!-- One private memory, opened. Filled by private.js from the private
+         archive API — never from the ordinary store, and never left populated
+         once the archive has locked. -->
+    <div class="private-detail" id="privateDetail" hidden></div>
+
+    <div class="grain" aria-hidden="true"></div>
+
+</body>
+
+</html>

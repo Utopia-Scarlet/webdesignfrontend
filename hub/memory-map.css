@@ -1,0 +1,193 @@
+/* ==========================================================================
+   LoveStory — Memory Map page
+
+   Only what the standalone map needs on top of the Hub's world stylesheet:
+   the opening, the one extra toolbar control, and the arrival/departure
+   transitions. Nothing here restyles the globe itself.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Theme
+
+   tokens.css carries the light "paper" palette that the Landing and Entrance
+   pages use, and hub/style.css re-aliases those names to the dark archive
+   palette inside `.hub-page` only. This page is not the Hub, so without the
+   block below every rule in the shared world stylesheet — which is written in
+   terms of --bg/--text/--gold — resolved to the light values: a cream globe,
+   invisible coastlines and an unreadable back button.
+
+   Aliasing the same source palette here fixes the whole map at once, without
+   touching one shared rule.
+   -------------------------------------------------------------------------- */
+.map-page{
+    --bg:var(--archive-bg);                       /* #10110F */
+    --surface:var(--archive-surface);             /* #171815 */
+    --photo-frame:var(--archive-photo-frame);
+
+    --text:var(--archive-text);                   /* #E8E3D8 */
+    --muted:var(--archive-muted);                 /* #98968E */
+    --muted-dim:var(--archive-muted-dim);         /* #6F706A */
+
+    --gold:var(--archive-gold);                   /* #B79A62 */
+    --gold-bright:var(--archive-gold-bright);     /* #C8AD75 */
+    --gold-dark:var(--archive-gold-dark);
+
+    --line:var(--archive-line);
+    --line-gold:var(--archive-line-gold);
+
+    background:var(--bg);
+    color:var(--text);
+    min-height:100svh;
+    overflow:hidden;
+}
+
+body.map-page .grain{ opacity:.022; }
+
+/* --------------------------------------------------------------------------
+   The opening
+
+   The globe is already loaded and running underneath; this only decides
+   whether you can see it yet. Both the gate and the title move with opacity
+   and transform alone, so nothing here can cost a frame.
+   -------------------------------------------------------------------------- */
+.map-intro{
+    position:fixed;
+    inset:0;
+    z-index:90;                 /* above .world (80) */
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:1.1rem;
+
+    background:var(--bg);
+    text-align:center;
+    padding:2rem;
+
+    transition:opacity .5s var(--ease-out), transform .5s var(--ease-out);
+}
+
+.map-intro[hidden]{ display:none; }
+
+.map-intro.is-leaving{
+    opacity:0;
+    transform:translateY(-8px);
+    pointer-events:none;
+}
+
+.map-intro__eyebrow{
+    margin:0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.42em;
+    text-transform:uppercase;
+    color:var(--muted-dim);
+}
+
+.map-intro__title{
+    margin:0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(2.4rem, 7vw, 5rem);
+    line-height:1;
+    letter-spacing:-.01em;
+    color:var(--text);
+}
+
+.map-intro__note{
+    margin:0;
+    font-size:.95rem;
+    font-weight:300;
+    letter-spacing:.02em;
+    color:var(--muted);
+}
+
+/* While the title is up, the world is held back — hidden, and a touch small. */
+body.map-intro .world{ opacity:0; }
+
+body.map-intro .world.is-open .world__stage{
+    transform:scale(.92);
+    opacity:0;
+}
+
+/* --------------------------------------------------------------------------
+   Chrome contrast
+
+   Scoped to this page: the world's rules are shared with the Hub overlay, and
+   the Hub must look exactly as it did.
+   -------------------------------------------------------------------------- */
+.map-page .world__back{
+    /* A real target, and legible against the globe. */
+    min-height:40px;
+    padding:0;
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+
+    font-size:11px;
+    letter-spacing:.16em;
+    color:var(--archive-text);
+    opacity:.72;
+
+    transition:opacity .35s var(--ease-out), color .35s var(--ease-out);
+}
+
+.map-page .world__back:hover{
+    opacity:1;
+    color:var(--gold-bright);
+}
+
+.map-page .world__back:focus-visible{
+    opacity:1;
+    outline:1px solid var(--gold-bright);
+    outline-offset:3px;
+}
+
+/* "World" inside a country panel is the way back up a level, so it is gold. */
+.map-page .world__panel-back{
+    min-height:32px;
+    align-items:center;
+    color:var(--gold);
+}
+
+.map-page .world__panel-back:hover{ color:var(--gold-bright); }
+
+/* Choosing a country focuses it without erasing everything else: the rest of
+   the world dims but stays visible, so you always know where you are. */
+.map-page .world__countries.is-focused .world__country:not(.is-selected){
+    opacity:.5;
+}
+
+.map-page .world__country{
+    transition:fill .35s var(--ease-out), stroke .35s var(--ease-out),
+               opacity .35s var(--ease-out);
+}
+
+/* --------------------------------------------------------------------------
+   Leaving
+   -------------------------------------------------------------------------- */
+body.is-leaving .world{
+    opacity:0;
+    transition:opacity .26s var(--ease-out);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive — the toolbar stops being three columns and becomes a stack.
+   -------------------------------------------------------------------------- */
+/* Matches the world's own mobile breakpoint, so the toolbar and the layout
+   change together instead of leaving an awkward band between them. */
+@media (max-width:700px){
+    /* The globe and the panel stack here, so the toolbar only holds the way
+       out and the drag hint is hidden by the world stylesheet itself. */
+    .map-page .world__bar{
+        gap:.8rem 1rem;
+        justify-content:flex-start;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .map-intro{
+        transition-duration:.01ms;
+    }
+}

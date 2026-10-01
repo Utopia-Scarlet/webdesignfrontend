@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Memory Map — Love Story</title>
+    <meta name="description"
+          content="Every place we have been, and the memories that happened there.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&amp;family=Inter:wght@300;400;500&amp;display=swap">
+
+    <link rel="stylesheet" href="../tokens.css">
+    <!-- The world already has a design language; the map reuses it rather than
+         inventing a second one. -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="memory-map.css">
+
+    <script src="../data/world-countries.js" defer></script>
+    <script src="../data/memory-fields.js" defer></script>
+    <script src="../data/memories.js" defer></script>
+    <script src="../config.js" defer></script>
+    <script src="modules/api.js" defer></script>
+    <script src="../auth.js" defer></script>
+    <script src="../entry.js" defer></script>
+    <script src="../entry-guard.js" defer></script>
+    <script src="geo.js" defer></script>
+    <script src="globe.js" defer></script>
+    <script src="memory-map.js" defer></script>
+</head>
+
+<body class="map-page map-intro world-standalone">
+
+    <!-- ======================================================================
+         The opening. Short, automatic, and only shown once per session: it
+         tells you where you are, then gets out of the way. Nothing here waits
+         for a click.
+         ====================================================================== -->
+    <div class="map-intro" id="mapIntro">
+        <p class="map-intro__eyebrow">Love / Story</p>
+        <h1 class="map-intro__title">Memory Map</h1>
+        <p class="map-intro__note">Every place holds a memory.</p>
+    </div>
+
+    <!-- ======================================================================
+         The interactive world. This is the same markup and the same renderer
+         the Hub grows its small globe into, so there is one globe in the
+         project rather than two.
+         ====================================================================== -->
+    <div class="world" id="world" hidden>
+        <div class="world__stage" id="worldStage">
+            <svg class="world__svg" id="worldSvg" viewBox="0 0 1000 1000" aria-hidden="true">
+                <defs>
+                    <clipPath id="worldClip">
+                        <circle cx="500" cy="500" r="430"></circle>
+                    </clipPath>
+                </defs>
+
+                <g class="world__background">
+                    <circle class="world__sphere" cx="500" cy="500" r="430"></circle>
+                    <g class="world__graticule" id="worldGraticule"></g>
+                </g>
+
+                <g class="world__land" clip-path="url(#worldClip)">
+                    <g class="world__countries" id="worldCountries"></g>
+                </g>
+
+                <g class="world__cities" clip-path="url(#worldClip)">
+                    <g class="world__markers" id="worldMarkers"></g>
+                </g>
+
+                <circle class="world__limb" cx="500" cy="500" r="430"></circle>
+            </svg>
+        </div>
+
+        <div class="world__panel" id="worldPanel"></div>
+
+        <p class="world__country-label" id="worldCountryLabel" aria-hidden="true"></p>
+
+        <header class="world__bar">
+            <!-- Deliberately NOT id="worldBack": on this page the back button
+                 leaves for the Hub, while the panel keeps its own way out of a
+                 selected country or city. -->
+            <button class="world__back" type="button" id="mapBack">
+                <span aria-hidden="true">&larr;</span> Our space
+            </button>
+
+            <span class="world__hint" id="worldHint">Drag to turn &middot; Scroll to zoom</span>
+        </header>
+
+        <nav class="world__index" id="worldIndex" aria-label="Places with memories"></nav>
+    </div>
+
+    <div class="grain" aria-hidden="true"></div>
+
+</body>
+
+</html>

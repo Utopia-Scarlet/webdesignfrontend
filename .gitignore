@@ -1,1 +1,20 @@
 WEBSIGN_personalwork/
+.venv/
+
+# --- Python (Love Story backend) -------------------------------------------
+backend/__pycache__/
+__pycache__/
+*.pyc
+
+# Deliberately NOT ignored, so uploaded photographs and the memory database can
+# never look "lost" after an upload:
+#
+#     backend/uploads/     your photographs
+#     backend/lovestory.db your memories
+#
+# Both are private project data. If you would rather keep them out of version
+# control, uncomment the two lines below — but understand that after that,
+# `git status` will no longer show a new upload.
+#
+# backend/uploads/
+# backend/lovestory.db

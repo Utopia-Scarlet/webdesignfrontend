@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Love Story — Our Space</title>
+    <meta name="description"
+          content="A quiet private archive: the moments, the timeline, and the places they happened.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&amp;family=Inter:wght@300;400;500&amp;display=swap">
+
+    <link rel="stylesheet" href="../tokens.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- The Profile drawer, and the Notification Center beside it. -->
+    <link rel="stylesheet" href="../account.css">
+    <link rel="stylesheet" href="../notifications.css">
+    <link rel="stylesheet" href="../privacy.css">
+
+    <!-- Real coastlines (Natural Earth 110m), then the projection and the
+         globe that uses them. -->
+    <script src="../routes.js" defer></script>
+    <script src="../data/world-countries.js" defer></script>
+    <script src="../data/memory-fields.js" defer></script>
+    <script src="../data/memories.js" defer></script>
+    <!-- The plans and the anniversaries are their own collections, each with
+         its own store. Neither is derived from a memory. -->
+    <script src="../data/future-plans.js" defer></script>
+    <script src="../data/anniversaries.js" defer></script>
+    <!-- The Timeline is a view over all of them, not a collection of its own. -->
+    <script src="../data/timeline-events.js" defer></script>
+    <script src="geo.js" defer></script>
+    <script src="globe.js" defer></script>
+    <!-- The one place the API address is defined, shared with the Library. -->
+    <script src="../config.js" defer></script>
+    <script src="modules/api.js" defer></script>
+    <script src="../auth.js" defer></script>
+    <script src="../entry.js" defer></script>
+    <script src="../account.js" defer></script>
+    <script src="../notifications.js" defer></script>
+    <!-- The second lock: the Hub says whether the private archive is set up and
+         open, and never anything about what is inside it. -->
+    <script src="../privacy.js" defer></script>
+    <script src="script.js" defer></script>
+</head>
+
+<body class="hub-page">
+
+    <!-- Ambient zones: enormous, almost invisible pools of light. -->
+    <div class="ambient" aria-hidden="true">
+        <span class="ambient__zone ambient__zone--moments"></span>
+        <span class="ambient__zone ambient__zone--world"></span>
+        <span class="ambient__zone ambient__zone--timeline"></span>
+    </div>
+
+    <div class="hub">
+
+        <header class="hub__chrome">
+            <!-- Three parts: the name, the years, and the actions. The header
+                 is a three-column grid, so these are exactly three children —
+                 the account and the menu live inside one group rather than
+                 being separate items, which is what pushed the menu onto a
+                 second row. -->
+            <span class="hub__brand">Love / Story</span>
+
+            <div class="hub__years" id="hubYears" role="group" aria-label="Filter by year"></div>
+
+            <div class="hub__actions">
+                <!-- Notifications. A bell, and a count only while there is
+                     one — an empty badge is a nag. -->
+                <button class="hub__bell" type="button" id="hubBellButton"
+                        aria-expanded="false" aria-controls="hubNotificationsPanel"
+                        aria-label="Notifications">
+                    <span class="hub__bell-glyph" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                            <path d="M12 4a5 5 0 0 0-5 5v3.2L5.6 15.4h12.8L17 12.2V9a5 5 0 0 0-5-5Z"
+                                  fill="none" stroke="currentColor" stroke-width="1.3"
+                                  stroke-linejoin="round"></path>
+                            <path d="M10.2 17.6a1.9 1.9 0 0 0 3.6 0"
+                                  fill="none" stroke="currentColor" stroke-width="1.3"
+                                  stroke-linecap="round"></path>
+                        </svg>
+                    </span>
+                    <span class="hub__bell-dot" id="hubBellDot" hidden></span>
+                </button>
+
+                <!-- Who is here. Quiet: an outline, a name, and the drawer
+                     behind it. Not an avatar, not a badge. -->
+                <button class="hub__account" type="button" id="hubAccountButton"
+                        aria-expanded="false" aria-controls="hubAccountPanel">
+                    <span class="hub__account-glyph" aria-hidden="true"></span>
+                    <span class="hub__account-name" id="hubAccountName">Account</span>
+                </button>
+
+                <button class="hub__menu-button" type="button"
+                        id="hubMenuButton" aria-expanded="false" aria-controls="hubMenu">
+                    <span>Menu</span>
+                    <span class="hub__menu-unread" id="hubUnread" hidden></span>
+                    <span class="hub__menu-icon" aria-hidden="true">&#9776;</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="hub__space" id="hubSpace">
+
+            <h1 class="sr-only">Our Space — Love Story</h1>
+
+            <!-- Empty by default; drawn only while a Timeline event with a
+                 place is being looked at. -->
+            <svg class="link" id="hubLink" aria-hidden="true" focusable="false">
+                <path class="link__path" id="hubLinkPath"></path>
+            </svg>
+
+            <!-- Everything lives inside one bounded stage, so on a very wide
+                 screen the five elements stay a room rather than scattering
+                 out to the corners of the viewport. -->
+            <div class="main-hub-stage">
+
+            <!-- 1. MOMENTS — left, upper. -->
+            <section class="module module--moments" data-module="moments"
+                     style="--in-delay:.22s;--float-dur:10s;">
+                <div class="module__inner">
+                    <!-- One real link for the whole module. The title, the
+                         count, the photographs and the foot are all a single
+                         destination, so there is nothing inside that can point
+                         somewhere else — which is exactly what broke when the
+                         photographs were links of their own. -->
+                    <a class="module__link" href="modules/moments.html"
+                       aria-label="Open all memories">
+                        <div class="module__head">
+                            <h2 class="module__title">Moments</h2>
+                            <span class="module__meta" data-moments-count>&mdash;</span>
+                        </div>
+
+                        <!-- Order is fixed by data (back → front) and never
+                             changes on hover. -->
+                        <div class="stack" data-moments-stack></div>
+
+                        <!-- Kept as a class, not as a link: it already sits
+                             inside one. -->
+                        <div class="module__foot">
+                            <span class="module__function">All moments</span>
+                            <span class="module__arrow" aria-hidden="true">&rarr;</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 2. TIMELINE — right, upper. The whole span between two events
+                 is hoverable, not just the dots. -->
+            <section class="module module--timeline" data-module="timeline"
+                     style="--in-delay:.34s;--float-dur:12s;">
+                <div class="module__inner">
+                    <div class="module__head">
+                        <h2 class="module__title">Timeline</h2>
+                        <span class="module__meta" data-timeline-count>&mdash;</span>
+                    </div>
+
+                    <div class="timeline">
+                        <svg class="timeline__curve" viewBox="0 0 100 100"
+                             preserveAspectRatio="none" aria-hidden="true">
+                            <path class="timeline__curve-path" d="M 0 50 Q 50 18 100 50"
+                                  vector-effect="non-scaling-stroke"></path>
+                        </svg>
+                        <div class="timeline__zones" data-timeline-zones></div>
+                        <div class="timeline__nodes" data-timeline-nodes></div>
+                    </div>
+
+                    <div class="timeline__months" data-timeline-months></div>
+
+                    <a class="module__foot" href="modules/timeline.html">
+                        <span class="module__function">Full timeline</span>
+                        <span class="module__arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 3. OUR WORLD — the centre of the room. -->
+            <section class="module module--map" data-module="map"
+                     style="--in-delay:.46s;--float-dur:14s;">
+                <div class="module__inner">
+                    <div class="module__head module__head--anchor">
+                        <h2 class="module__title module__title--display">Our World</h2>
+                        <span class="module__meta" data-map-counts>&mdash;</span>
+                    </div>
+
+                    <button class="globe" type="button" id="globeButton"
+                            aria-label="Open the interactive world map">
+                        <!-- Our World's own language: two orbits. Decorative. -->
+                        <svg class="globe__orbits" viewBox="0 0 240 240" aria-hidden="true">
+                            <ellipse cx="120" cy="120" rx="118" ry="42"
+                                     transform="rotate(-18 120 120)"></ellipse>
+                            <ellipse cx="120" cy="120" rx="118" ry="30"></ellipse>
+                        </svg>
+
+                        <!-- Graticule and place markers are drawn from the same
+                             projection, so the markers sit on the real grid. -->
+                        <svg class="globe__svg" viewBox="0 0 240 240" aria-hidden="true">
+                            <circle class="globe__sphere" cx="120" cy="120" r="92"></circle>
+                            <g class="globe__graticule" data-globe-graticule></g>
+                        </svg>
+                        <span class="globe__dots" data-map-dots></span>
+                        <span class="globe__open" aria-hidden="true"></span>
+                    </button>
+
+                    <a class="module__foot" href="memory-map.html" id="memoryMapLink">
+                        <span class="module__function">Memory Map</span>
+                        <span class="module__arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 4. PLAN THE FUTURE — left, lower. -->
+            <section class="module module--future" data-module="future"
+                     style="--in-delay:.58s;--float-dur:11s;">
+                <div class="module__inner">
+                    <div class="module__head">
+                        <h2 class="module__title">Plan the Future</h2>
+                        <span class="module__meta" data-future-count>&mdash;</span>
+                    </div>
+
+                    <div class="future-list" data-future-list></div>
+
+                    <a class="module__foot" href="modules/future.html">
+                        <span class="module__function">All plans</span>
+                        <span class="module__arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 5. ANNIVERSARY — right, lower.
+
+                 The dates here are declared on purpose, never derived from a
+                 memory: a photograph taken on a Tuesday is not an anniversary
+                 of anything. See data/anniversaries.js. -->
+            <section class="module module--countdown" data-module="countdown"
+                     style="--in-delay:.7s;--float-dur:13s;">
+                <div class="module__inner">
+                    <!-- The whole countdown opens the page of dates. The list
+                         below stays outside the link, because each of its rows
+                         is a button of its own. -->
+                    <a class="countdown__link" href="modules/anniversary.html">
+                        <span class="module__eyebrow" data-countdown-eyebrow>Next Anniversary</span>
+                        <span class="countdown__title" data-countdown-title>&mdash;</span>
+
+                        <span class="countdown">
+                            <span class="countdown__number" data-countdown-days>&mdash;</span>
+                            <span class="countdown__unit" data-countdown-unit>Days</span>
+                        </span>
+
+                        <span class="countdown__date" data-countdown-date>&mdash;</span>
+                        <span class="countdown__hint" data-countdown-hint>until our anniversary</span>
+                    </a>
+
+                    <ul class="upcoming" data-countdown-upcoming></ul>
+
+                    <!-- Shown only when there are no dates at all. An editor is
+                         offered the next step; a guest is told the truth. -->
+                    <a class="countdown__empty" id="countdownAdd" href="modules/anniversary.html" hidden>
+                        <span aria-hidden="true">+</span> Add Anniversary
+                    </a>
+
+                    <a class="module__foot" href="modules/anniversary.html">
+                        <span class="module__function">All dates</span>
+                        <span class="module__arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </section>
+
+            </div><!-- /.main-hub-stage -->
+
+            <!-- 6. PRIVATE ARCHIVE — under Our World, the quietest thing in the
+                 room. It is a door, not a shelf: the Hub never shows how many
+                 private memories there are, or one title, or a cover. Only
+                 whether the archive has been set up and whether it is open.
+
+                 It sits outside the stage so it cannot be dragged into the
+                 floating composition of the five; it belongs below the world,
+                 not among it. -->
+            <section class="module module--private" data-module="private">
+                <div class="module__inner">
+                    <a class="module__link private-module__link" href="private/index.html"
+                       aria-label="Open the Private Archive">
+                        <div class="private-module__head">
+                            <span class="private-module__glyph" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                                    <path d="M8.4 10.5V8.2a3.6 3.6 0 0 1 7.2 0v2.3"
+                                          fill="none" stroke="currentColor" stroke-width="1.3"
+                                          stroke-linecap="round"></path>
+                                    <rect x="5" y="10.5" width="14" height="9.5" rx="1.5"
+                                          fill="none" stroke="currentColor" stroke-width="1.3"></rect>
+                                </svg>
+                            </span>
+                            <h2 class="private-module__title">Private<br>Archive</h2>
+                        </div>
+
+                        <p class="private-module__sub">Protected memories</p>
+                        <!-- Set up / Locked / Open. Never a count, a title, a date
+                             or a cover: the Hub is not told what is inside. -->
+                        <p class="private-module__state" data-private-state>&mdash;</p>
+                    </a>
+
+                    <!-- LOCK is the one thing this module does besides opening
+                         the archive. Somebody about to hand their laptop to a
+                         friend should not have to open the private archive in
+                         order to close it. -->
+                    <div class="private-module__actions">
+                        <a class="module__foot private-module__foot" href="private/index.html"
+                           id="hubPrivateOpen">
+                            <span class="module__function" data-private-action>Open</span>
+                            <span class="module__arrow" aria-hidden="true">&rarr;</span>
+                        </a>
+                        <button class="private-module__lock" type="button"
+                                id="hubPrivateLock" aria-label="Lock the private archive"
+                                hidden>
+                            Lock <span aria-hidden="true">&rarr;</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ======================================================================
+         The interactive world. Hidden until Our World is opened; the globe
+         scales out of the hub position so it reads as the same object growing.
+         ====================================================================== -->
+    <div class="world" id="world" hidden>
+        <div class="world__stage" id="worldStage">
+            <svg class="world__svg" id="worldSvg" viewBox="0 0 1000 1000" aria-hidden="true">
+                <defs>
+                    <clipPath id="worldClip">
+                        <circle cx="500" cy="500" r="430"></circle>
+                    </clipPath>
+                </defs>
+
+                <!-- Decorative: never receives a pointer. -->
+                <g class="world__background">
+                    <circle class="world__sphere" cx="500" cy="500" r="430"></circle>
+                    <g class="world__graticule" id="worldGraticule"></g>
+                </g>
+
+                <!-- Interactive: one real path per country. -->
+                <g class="world__land" clip-path="url(#worldClip)">
+                    <g class="world__countries" id="worldCountries"></g>
+                </g>
+
+                <!-- Interactive: only the places we actually have. -->
+                <g class="world__cities" clip-path="url(#worldClip)">
+                    <g class="world__markers" id="worldMarkers"></g>
+                </g>
+
+                <circle class="world__limb" cx="500" cy="500" r="430"></circle>
+            </svg>
+        </div>
+
+        <div class="world__panel" id="worldPanel">
+            <!-- filled by globe.js -->
+        </div>
+
+        <p class="world__country-label" id="worldCountryLabel" aria-hidden="true"></p>
+
+        <header class="world__bar">
+            <button class="world__back" type="button" id="worldBack">
+                <span aria-hidden="true">&larr;</span> Our space
+            </button>
+            <span class="world__hint" id="worldHint">Drag to turn &middot; Scroll to zoom</span>
+        </header>
+
+        <!-- Keyboard / screen-reader route to every place, since dragging is
+             not available to everyone. -->
+        <nav class="world__index" id="worldIndex" aria-label="Places with memories"></nav>
+    </div>
+
+    <div class="hub-menu" id="hubMenu" hidden>
+        <div class="hub-menu__panel" role="dialog" aria-modal="true" aria-label="Menu">
+            <button class="hub-menu__close" type="button" id="hubMenuClose" aria-label="Close menu">&times;</button>
+
+            <p class="hub-menu__eyebrow">Love / Story</p>
+
+            <ul class="hub-menu__list">
+                <li><a href="modules/moments.html">Memories</a></li>
+                <li><a href="memory-map.html">Memory Map</a></li>
+                <li><a href="modules/timeline.html">Timeline</a></li>
+                <li><a href="modules/future.html">Plan the Future</a></li>
+                <li><a href="modules/anniversary.html">Anniversaries</a></li>
+            </ul>
+
+            <!-- Recent activity. Quiet, archive-like: a line per event, no
+                 cards, no avatars. Visible to guests too — reading what
+                 happened is not a privilege. -->
+            <section class="hub-menu__activity">
+                <p class="hub-menu__activity-title">Recent Activity</p>
+                <ul class="activity-list" id="hubActivity"></ul>
+            </section>
+        </div>
+    </div>
+
+    <!-- The Profile: who you are, which spaces you are in, and how to run the
+         one you are looking at. Same component, one drawer. -->
+    <div class="account" id="hubAccountPanel" hidden>
+        <button class="account__scrim" type="button" id="hubAccountScrim" tabindex="-1"
+                aria-label="Close"></button>
+
+        <aside class="account__panel" role="dialog" aria-modal="true"
+               aria-labelledby="hubAccountTitle">
+            <header class="account__head">
+                <p class="account__eyebrow" id="hubAccountTitle">Profile</p>
+                <button class="account__close" type="button" id="hubAccountClose"
+                        aria-label="Close">&times;</button>
+            </header>
+
+            <div class="account__body" id="hubAccountBody"></div>
+
+            <footer class="account__foot">
+                <button class="account__signout" type="button" id="hubAccountSignOut">
+                    Sign out <span aria-hidden="true">&rarr;</span>
+                </button>
+            </footer>
+        </aside>
+    </div>
+
+    <!-- The Notification Center. Its own drawer, because a notification is
+         about the ACCOUNT rather than about the space on screen: a message
+         about a group somebody has been removed from still has to reach them.
+         The list itself is drawn by notifications.js. -->
+    <div class="notifications" id="hubNotificationsPanel" hidden>
+        <button class="notifications__scrim" type="button" id="hubNotificationsScrim"
+                tabindex="-1" aria-label="Close"></button>
+
+        <aside class="notifications__panel" role="dialog" aria-modal="true"
+               aria-labelledby="hubNotificationsTitle">
+            <div class="notifications__body" id="hubNotificationsBody"></div>
+        </aside>
+    </div>
+
+    <div class="grain" aria-hidden="true"></div>
+
+</body>
+
+</html>

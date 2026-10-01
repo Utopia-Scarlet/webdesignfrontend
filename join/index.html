@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Join Our Space — Love Story</title>
+    <meta name="description" content="An invitation to a private space for two.">
+    <meta name="robots" content="noindex">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&amp;family=Inter:wght@300;400;500&amp;display=swap">
+
+    <link rel="stylesheet" href="../tokens.css">
+    <link rel="stylesheet" href="join.css">
+
+    <script src="../routes.js" defer></script>
+    <script src="../config.js" defer></script>
+    <script src="../hub/modules/api.js" defer></script>
+    <script src="../auth.js" defer></script>
+    <script src="../entry.js" defer></script>
+    <script src="join.js" defer></script>
+</head>
+
+<body class="join-page">
+
+    <main class="join">
+        <p class="join__eyebrow">Love / Story</p>
+
+        <!-- Filled in by join.js: who is asking, and the two ways to answer
+             them. Nothing is shown until the server has answered, so this page
+             never pretends a spent link might still work. -->
+        <section class="join__panel" id="joinPanel" aria-live="polite">
+            <p class="join__lead">Reading the invitation&hellip;</p>
+        </section>
+    </main>
+
+    <div class="grain" aria-hidden="true"></div>
+
+</body>
+
+</html>

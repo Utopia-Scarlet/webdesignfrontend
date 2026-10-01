@@ -1,0 +1,602 @@
+/* ==========================================================================
+   LoveStory — Anniversaries
+
+   The index of dates and one date opened. Same world as the Hub, the Library
+   and Plan the Future: colour comes entirely from the archive tokens in
+   tokens.css, so nothing here invents a palette of its own.
+
+   The shell (a bounded room, a chrome bar, a scrolling editorial column) is
+   deliberately the same shape as the plans page — these are sibling index
+   pages and should read as such. The rules are repeated rather than shared
+   through a common file, so that changing one page can never silently move
+   the other.
+
+   Depends on ../../tokens.css and memory-form.css (the shared sheet).
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Page and shell
+   -------------------------------------------------------------------------- */
+.anniv-page{
+    background:#0D0E0C;
+    color:var(--archive-text);
+    min-height:100svh;
+    overflow:hidden;
+}
+
+body.anniv-page .grain{ opacity:.022; }
+
+.anniv{
+    display:flex;
+    flex-direction:column;
+
+    width:calc(100vw - 48px);
+    height:calc(100vh - 48px);
+    margin:24px;
+
+    background:#151613;
+    border:1px solid rgba(200,173,117,.20);
+    border-radius:28px;
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.015),
+        0 24px 70px rgba(0,0,0,.42);
+    overflow:hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Chrome
+   -------------------------------------------------------------------------- */
+.anniv__chrome{
+    display:flex;
+    align-items:center;
+    gap:1.4rem;
+
+    padding:1.5rem 2.4rem;
+    border-bottom:1px solid var(--archive-line);
+    background:linear-gradient(180deg,rgba(255,255,255,.012),transparent);
+}
+
+.anniv__brand{
+    font-family:var(--serif);
+    font-size:1.02rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-text);
+    text-decoration:none;
+}
+
+.anniv__back{
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--archive-muted);
+    text-decoration:none;
+    transition:color .35s var(--ease-out);
+}
+
+.anniv__back:hover{ color:var(--archive-gold-bright); }
+
+.anniv__count{
+    margin:0 0 0 auto;
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.anniv__new{
+    padding:.6rem 1.15rem;
+    border:1px solid var(--archive-line-gold);
+    border-radius:var(--radius-pill);
+    background:none;
+    color:var(--archive-gold-bright);
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    transition:border-color .35s var(--ease-out),background .35s var(--ease-out);
+}
+
+.anniv__new:hover{
+    border-color:rgba(200,173,117,.42);
+    background:rgba(200,173,117,.08);
+}
+
+/* --------------------------------------------------------------------------
+   The index
+   -------------------------------------------------------------------------- */
+.anniv__scroll{
+    flex:1;
+    min-height:0;              /* or the flex item refuses to scroll */
+    overflow-y:auto;
+    padding:3.2rem clamp(1.6rem,6vw,7rem) 5rem;
+}
+
+.anniv__intro{
+    max-width:900px;
+    margin:0 auto;
+}
+
+.anniv__eyebrow{
+    margin:0;
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}
+
+.anniv__title{
+    margin:.7rem 0 0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(2.2rem,4.4vw,3.4rem);
+    line-height:1.05;
+    letter-spacing:.01em;
+}
+
+.anniv__stats{
+    margin:.9rem 0 0;
+    font-size:11px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.anniv__note{
+    max-width:900px;
+    margin:3rem auto 0;
+    font-size:.95rem;
+    color:var(--archive-muted);
+}
+
+/* The error line is a flex row, so it would otherwise out-specify [hidden]. */
+.anniv__note[hidden]{ display:none; }
+
+.anniv__note--empty{
+    font-family:var(--serif);
+    font-size:1.5rem;
+    letter-spacing:.04em;
+    color:var(--archive-muted);
+}
+
+.anniv__note--error{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    color:var(--archive-danger);
+}
+
+.anniv__retry{
+    border:0;
+    background:none;
+    padding:0;
+    color:var(--archive-gold-bright);
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   One row of the index: a name, the date it comes round, and how long.
+
+   Ordered by next occurrence, soonest first — the whole page exists to answer
+   "what is coming", so the answer is at the top.
+   -------------------------------------------------------------------------- */
+.anniv-list{
+    max-width:900px;
+    margin:3rem auto 0;
+    padding:0;
+    list-style:none;
+}
+
+.anniv-row{
+    border-top:1px solid var(--archive-line);
+}
+
+.anniv-row:last-child{
+    border-bottom:1px solid var(--archive-line);
+}
+
+.anniv-row__button{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:baseline;
+    gap:1.4rem;
+
+    width:100%;
+    padding:1.7rem .6rem 1.7rem 0;
+    border:0;
+    background:none;
+    text-align:left;
+    color:inherit;
+    transition:padding-left .5s var(--ease-out),background .5s var(--ease-out);
+}
+
+.anniv-row:hover .anniv-row__button,
+.anniv-row__button:focus-visible{
+    padding-left:1rem;
+    background:linear-gradient(90deg,rgba(200,173,117,.07),transparent 62%);
+}
+
+.anniv-row__title{
+    display:block;
+    font-family:var(--serif);
+    font-size:1.65rem;
+    font-weight:300;
+    line-height:1.2;
+    letter-spacing:.01em;
+}
+
+.anniv-row__label{
+    display:block;
+    margin:.5rem 0 0;
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--archive-gold-dark);
+}
+
+.anniv-row__since{
+    display:block;
+    margin:.35rem 0 0;
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.anniv-row__when{
+    text-align:right;
+    white-space:nowrap;
+}
+
+.anniv-row__days{
+    display:block;
+    font-family:var(--serif);
+    font-size:1.5rem;
+    line-height:1;
+    letter-spacing:.02em;
+    color:var(--archive-gold-bright);
+    font-variant-numeric:tabular-nums;
+}
+
+.anniv-row__date{
+    display:block;
+    margin:.5rem 0 0;
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-muted);
+}
+
+/* --------------------------------------------------------------------------
+   One date, opened
+   -------------------------------------------------------------------------- */
+.anniv-detail{
+    position:fixed;
+    inset:0;
+    z-index:var(--z-modal);
+    display:flex;
+    flex-direction:column;
+
+    opacity:0;
+    transition:opacity .32s var(--ease-out);
+}
+
+.anniv-detail.is-open{ opacity:1; }
+
+.anniv-detail[hidden]{ display:none; }
+
+/* The sheet is opened *from* the detail, so it has to sit above it. */
+.anniv-page .sheet{ z-index:calc(var(--z-modal) + 10); }
+
+.anniv-detail__scrim{
+    position:absolute;
+    inset:0;
+    background:#0C0D0B;
+}
+
+.anniv-detail__bar{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:1.2rem;
+
+    padding:1.5rem clamp(1.6rem,5vw,3.4rem);
+    border-bottom:1px solid var(--archive-line-weak);
+}
+
+.anniv-detail__back{
+    border:0;
+    background:none;
+    padding:0;
+    color:var(--archive-muted);
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    transition:color .35s var(--ease-out);
+}
+
+.anniv-detail__back:hover{ color:var(--archive-gold-bright); }
+
+.anniv-detail__tools{
+    display:flex;
+    gap:1.4rem;
+    margin-left:auto;
+}
+
+.anniv-detail__edit,
+.anniv-detail__delete{
+    border:0;
+    background:none;
+    padding:0;
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+}
+
+.anniv-detail__edit{ color:var(--archive-gold-bright); }
+.anniv-detail__edit:hover{ color:var(--archive-text); }
+
+.anniv-detail__delete{ color:var(--archive-danger); }
+.anniv-detail__delete:hover{ color:#C08E77; }
+
+.anniv-detail__stage{
+    position:relative;
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:3.4rem clamp(1.6rem,5vw,3.4rem) 5rem;
+}
+
+.anniv-archive{
+    max-width:800px;
+    margin:0 auto;
+}
+
+.anniv-archive__eyebrow{
+    margin:0;
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}
+
+.anniv-archive__title{
+    margin:.8rem 0 0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(2.1rem,4.2vw,3.2rem);
+    line-height:1.06;
+}
+
+.anniv-archive__since{
+    margin:1rem 0 0;
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+/* The next one, given the weight of a headline: it is the reason to open a
+   date at all. */
+.anniv-next{
+    margin:2.6rem 0 0;
+    padding:1.8rem 0;
+    border-top:1px solid var(--archive-line);
+    border-bottom:1px solid var(--archive-line);
+}
+
+.anniv-next__label{
+    display:block;
+    font-size:10px;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.anniv-next__number{
+    display:block;
+    margin:1rem 0 0;
+    font-family:var(--serif);
+    font-size:clamp(1.6rem,3vw,2.2rem);
+    line-height:1.1;
+    letter-spacing:.04em;
+    color:var(--archive-gold-bright);
+}
+
+.anniv-next__date{
+    display:block;
+    margin:.9rem 0 0;
+    font-size:11px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--archive-text);
+}
+
+.anniv-next__days{
+    display:block;
+    margin:.7rem 0 0;
+    font-family:var(--serif);
+    font-size:1.35rem;
+    letter-spacing:.06em;
+    color:var(--archive-gold);
+}
+
+/* The past, newest first. Each one is a small block — the number it was, the
+   date it fell on, what it was called — because the number beside it is the
+   anniversary itself (02, 01), not a row index. */
+.anniv-archive__section{
+    margin:2.8rem 0 0;
+}
+
+.anniv-archive__label{
+    margin:0 0 .9rem;
+    font-size:10px;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    color:var(--archive-gold-dark);
+}
+
+.anniv-past{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+.anniv-past__item{
+    padding:1.4rem 0;
+    border-top:1px solid var(--archive-line-weak);
+}
+
+.anniv-past__item:first-child{ border-top:0; }
+
+.anniv-past__number{
+    display:block;
+    font-size:10px;
+    letter-spacing:.24em;
+    color:var(--archive-gold-dark);
+    font-variant-numeric:tabular-nums;
+}
+
+.anniv-past__date{
+    display:block;
+    margin:.7rem 0 0;
+    font-family:var(--serif);
+    font-size:1.25rem;
+    letter-spacing:.04em;
+    color:var(--archive-text);
+}
+
+.anniv-past__label{
+    display:block;
+    margin:.45rem 0 0;
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.anniv-past__none{
+    margin:0;
+    font-size:.95rem;
+    font-style:italic;
+    color:var(--archive-muted-dim);
+}
+
+.anniv-archive__prose{
+    margin:0;
+    font-size:1.02rem;
+    line-height:1.85;
+    color:var(--archive-text);
+    white-space:pre-line;
+}
+
+.anniv-archive__by{
+    margin:3rem 0 0;
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+/* --------------------------------------------------------------------------
+   Confirmation — in the page, never window.confirm(): a system dialog cannot
+   be styled, cannot say what is about to go, and blocks the whole tab.
+   -------------------------------------------------------------------------- */
+.confirm{
+    position:fixed;
+    inset:0;
+    z-index:calc(var(--z-modal) + 20);
+    display:grid;
+    place-items:center;
+    padding:1.5rem;
+}
+
+.confirm[hidden]{ display:none; }
+
+.confirm__scrim{
+    position:absolute;
+    inset:0;
+    background:rgba(6,7,6,.74);
+}
+
+.confirm__panel{
+    position:relative;
+    width:min(460px,100%);
+    padding:2rem 1.9rem 1.6rem;
+    border:1px solid rgba(200,173,117,.24);
+    border-radius:18px;
+    background:#191A17;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+
+.confirm__title{
+    margin:0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:1.5rem;
+    letter-spacing:.02em;
+}
+
+.confirm__note{
+    margin:1rem 0 0;
+    font-size:.95rem;
+    line-height:1.7;
+    color:var(--archive-muted);
+}
+
+.confirm__actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:1.4rem;
+    margin-top:1.8rem;
+}
+
+.confirm__cancel,
+.confirm__go{
+    border:0;
+    background:none;
+    padding:0;
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+}
+
+.confirm__cancel{ color:var(--archive-muted); }
+.confirm__cancel:hover{ color:var(--archive-text); }
+
+.confirm__go{ color:var(--archive-gold-bright); }
+.confirm__go:hover{ color:var(--archive-text); }
+
+.confirm__go--danger{ color:var(--archive-danger); }
+.confirm__go--danger:hover{ color:#C08E77; }
+
+/* --------------------------------------------------------------------------
+   Narrow screens
+   -------------------------------------------------------------------------- */
+@media (max-width:900px){
+    .anniv{
+        width:100vw;
+        height:100svh;
+        margin:0;
+        border:0;
+        border-radius:0;
+    }
+
+    .anniv__chrome{
+        flex-wrap:wrap;
+        gap:1rem;
+        padding:1.2rem 1.4rem;
+    }
+
+    .anniv__count{ margin-left:0; order:3; }
+
+    .anniv__scroll{ padding:2.4rem 1.4rem 4rem; }
+
+    .anniv-row__button{
+        grid-template-columns:1fr;
+        gap:.9rem;
+    }
+
+    .anniv-row__when{ text-align:left; }
+}

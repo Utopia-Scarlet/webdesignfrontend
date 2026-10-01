@@ -1,0 +1,588 @@
+/* ==========================================================================
+   LoveStory — the Private Archive
+
+   The same world as the rest of the archive: near-black, ivory, champagne
+   gold, serif titles. Restrained even by that standard — there is no badge, no
+   shield, no red, and nothing that says "top secret". It is a room in the same
+   house with a second door on it, not a different building.
+
+   Depends on ../tokens.css. The shared form's own styles live in
+   ../modules/memory-form.css; the privacy forms' in ../../privacy.css.
+   ========================================================================== */
+
+.private-page{
+    background:var(--archive-bg);
+    color:var(--archive-text);
+    min-height:100svh;
+}
+
+body.private-page .grain{ opacity:.025; }
+
+.private{
+    box-sizing:border-box;
+    width:min(1180px, 100% - 3rem);
+    min-height:100svh;
+    margin:0 auto;
+    padding:0 0 clamp(3rem,8vh,6rem);
+}
+
+/* --------------------------------------------------------------------------
+   Chrome — the wordmark, and LOCK
+   -------------------------------------------------------------------------- */
+.private__chrome{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    padding:1.6rem 0;
+}
+
+.private__brand{
+    font-family:var(--serif);
+    font-size:1.05rem;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--archive-text);
+    text-decoration:none;
+}
+
+.private__brand:hover{ color:var(--archive-gold-bright); }
+
+.private__actions{ display:flex; align-items:center; gap:1rem; }
+
+/* Locking must be the easiest thing on the page to find: somebody handing
+   their laptop to a friend should not have to hunt for it. It sits at the top
+   right, in words as well as a glyph. */
+.private__lock{
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+
+    appearance:none;
+    margin:0;
+    padding:.5rem .9rem;
+    border:1px solid var(--archive-line);
+    border-radius:2px;
+    background:none;
+
+    color:var(--archive-gold-bright);
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    cursor:pointer;
+
+    transition:color .3s var(--ease-out), border-color .3s var(--ease-out);
+}
+
+.private__lock:hover{
+    color:var(--archive-text);
+    border-color:var(--archive-gold-dark);
+}
+
+.private__lock:focus-visible{ outline:1px solid var(--archive-gold); outline-offset:3px; }
+.private__lock[disabled]{ color:var(--archive-muted-dim); cursor:default; }
+
+.private__lock-glyph{
+    display:block;
+    width:13px;
+    height:13px;
+    color:currentColor;
+}
+
+.private__lock-glyph svg{ display:block; width:100%; height:100%; }
+
+/* --------------------------------------------------------------------------
+   Setup, locked, and the archive's own head
+   -------------------------------------------------------------------------- */
+.private__loading{
+    margin:0;
+    padding:3rem 0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}
+
+.private__panel{
+    max-width:34rem;
+    padding:clamp(2rem, 7vh, 4.5rem) 0 0;
+}
+
+.private__eyebrow{
+    margin:0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}
+
+.private__title{
+    margin:1rem 0 0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(1.9rem, 4.6vw, 3rem);
+    line-height:1.1;
+}
+
+.private__title--space{
+    font-size:clamp(1.6rem, 3.6vw, 2.4rem);
+}
+
+.private__note{
+    margin:1.2rem 0 0;
+    max-width:46ch;
+    font-size:.98rem;
+    line-height:1.8;
+    color:var(--archive-muted);
+}
+
+.private__settings{
+    align-self:center;
+    margin-left:.4rem;
+    color:var(--archive-muted);
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    text-decoration:none;
+}
+
+.private__settings:hover{ color:var(--archive-gold-bright); }
+
+.private__head{ padding:clamp(1.5rem,5vh,3rem) 0 0; }
+
+.private__count{
+    margin:.9rem 0 0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.private__notice{
+    margin:1.6rem 0 0;
+    padding:.9rem 0;
+    border-top:1px solid var(--archive-line-weak);
+    border-bottom:1px solid var(--archive-line-weak);
+    font-size:.9rem;
+    line-height:1.7;
+    color:var(--archive-gold-bright);
+}
+
+.private__empty{
+    margin:clamp(2rem,8vh,5rem) 0 0;
+    font-family:var(--serif);
+    font-size:clamp(1.3rem,2.6vw,1.8rem);
+    font-weight:300;
+    color:var(--archive-muted);
+}
+
+/* --------------------------------------------------------------------------
+   The grid of private memories
+   -------------------------------------------------------------------------- */
+.private__grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:clamp(1.2rem, 3vw, 2.4rem);
+    margin:clamp(2rem, 6vh, 3.4rem) 0 0;
+}
+
+.private-card{
+    display:block;
+    appearance:none;
+    margin:0;
+    padding:0;
+    border:0;
+    background:none;
+    text-align:left;
+    cursor:pointer;
+    color:inherit;
+}
+
+.private-card__frame{
+    position:relative;
+    display:block;
+    aspect-ratio:4 / 5;
+    margin:0;
+    overflow:hidden;
+    background:var(--archive-photo-frame);
+    border:1px solid var(--archive-line-weak);
+    transition:border-color .45s var(--ease-out);
+}
+
+.private-card__image{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    filter:brightness(.92) saturate(.94);
+    transition:transform .8s var(--ease-out), filter .45s var(--ease-out);
+}
+
+.private-card:hover .private-card__frame,
+.private-card:focus-visible .private-card__frame{
+    border-color:var(--archive-line-gold);
+}
+
+.private-card:hover .private-card__image,
+.private-card:focus-visible .private-card__image{
+    transform:scale(1.03);
+    filter:brightness(1) saturate(1);
+}
+
+/* A photograph that will not load — because the archive has locked, or the
+   memory is no longer ours — leaves the mount, quietly. No broken image. */
+.private-card__frame.is-unavailable::after{
+    content:"";
+    position:absolute;
+    inset:37% 42%;
+    border:1px solid var(--archive-line);
+}
+
+.private-card__info{ padding:.95rem 0 0; }
+
+.private-card__title{
+    margin:0;
+    font-family:var(--serif);
+    font-size:1.2rem;
+    font-weight:300;
+    line-height:1.35;
+}
+
+.private-card__fact{
+    margin:.45rem 0 0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.private-card__permission{
+    margin:.6rem 0 0;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--archive-gold-dark);
+}
+
+.private-card:focus-visible{ outline:1px solid var(--archive-gold); outline-offset:6px; }
+
+/* --------------------------------------------------------------------------
+   One private memory, opened
+   -------------------------------------------------------------------------- */
+.private-detail{
+    position:fixed;
+    inset:0;
+    z-index:var(--z-modal);
+    background:var(--archive-bg);
+    opacity:0;
+    transition:opacity .45s var(--ease-out);
+}
+
+.private-detail[hidden]{ display:none; }
+
+.private-detail.is-open{ opacity:1; }
+
+.private-detail__bar{
+    position:sticky;
+    top:0;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    padding:1.4rem clamp(1.2rem,4vw,3rem);
+    background:linear-gradient(to bottom, var(--archive-bg) 60%, transparent);
+}
+
+.private-detail__back{
+    appearance:none;
+    border:0;
+    background:none;
+    padding:0;
+    color:var(--archive-muted);
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    cursor:pointer;
+}
+
+.private-detail__back:hover{ color:var(--archive-gold-bright); }
+.private-detail__back:focus-visible{ outline:1px solid var(--archive-gold); outline-offset:4px; }
+
+.private-detail__count{
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.22em;
+    color:var(--archive-muted-dim);
+}
+
+.private-detail__stage{
+    box-sizing:border-box;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    gap:clamp(.6rem, 2vw, 1.6rem);
+    width:min(1180px, 100% - 2rem);
+    margin:0 auto;
+    padding:0 0 4rem;
+}
+
+.private-detail__nav{
+    flex:0 0 auto;
+    align-self:center;
+    appearance:none;
+    border:0;
+    background:none;
+    padding:.8rem;
+    color:var(--archive-muted-dim);
+    font-size:1.1rem;
+    cursor:pointer;
+}
+
+.private-detail__nav:hover{ color:var(--archive-gold-bright); }
+.private-detail__nav:focus-visible{ outline:1px solid var(--archive-gold); outline-offset:2px; }
+
+.private-archive-object{
+    display:grid;
+    grid-template-columns:minmax(0, 1.35fr) minmax(0, 1fr);
+    gap:clamp(1.4rem, 4vw, 3rem);
+    width:100%;
+    min-width:0;
+}
+
+.private-detail__frame{
+    margin:0;
+    background:var(--archive-photo-frame);
+    border:1px solid var(--archive-line-weak);
+}
+
+.private-detail__image{
+    display:block;
+    width:100%;
+    height:auto;
+}
+
+.private-detail__frame.is-unavailable{
+    display:grid;
+    place-items:center;
+    min-height:min(58vh, 460px);
+    border-style:dashed;
+}
+
+.private-detail__unavailable{
+    margin:0;
+    padding:2rem;
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+    text-align:center;
+}
+
+.private-detail__info{ padding-top:.4rem; }
+
+.private-detail__title{
+    margin:0;
+    font-family:var(--serif);
+    font-weight:300;
+    font-size:clamp(1.7rem, 3.4vw, 2.4rem);
+    line-height:1.15;
+}
+
+.private-detail__permission{
+    margin:.7rem 0 0;
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.26em;
+    text-transform:uppercase;
+    color:var(--archive-gold);
+}
+
+.private-detail__facts{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.5rem 1.2rem;
+    margin:1.1rem 0 0;
+}
+
+.private-detail__fact{
+    font-family:var(--sans);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--archive-muted);
+}
+
+.private-detail__story{
+    margin:1.4rem 0 0;
+    max-width:52ch;
+    font-size:1rem;
+    line-height:1.85;
+    color:var(--archive-text);
+}
+
+.private-detail__uploader{
+    margin:1.6rem 0 0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.private-detail__actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:1.4rem;
+    margin:1.8rem 0 0;
+    padding-top:1.4rem;
+    border-top:1px solid var(--archive-line-weak);
+}
+
+.private-detail__action{
+    appearance:none;
+    border:0;
+    border-bottom:1px solid transparent;
+    background:none;
+    padding:0 0 .2rem;
+    color:var(--archive-gold-bright);
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    cursor:pointer;
+}
+
+.private-detail__action:hover{
+    color:var(--archive-text);
+    border-bottom-color:currentColor;
+}
+
+.private-detail__action:focus-visible{ outline:1px solid var(--archive-gold); outline-offset:4px; }
+
+.private-detail__action--danger{ color:var(--archive-muted); }
+.private-detail__action--danger:hover{ color:var(--archive-danger); }
+
+.private-detail__error{
+    margin:1.4rem 0 0;
+    font-size:12px;
+    line-height:1.6;
+    color:var(--archive-danger);
+}
+
+.private-detail__access{
+    margin:2rem 0 0;
+    padding-top:1.4rem;
+    border-top:1px solid var(--archive-line-weak);
+}
+
+.private-detail__access-title{
+    margin:0;
+    font-family:var(--sans);
+    font-size:10px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    color:var(--archive-gold-dark);
+}
+
+.private-detail__access-note{
+    margin:.8rem 0 0;
+    font-size:.92rem;
+    color:var(--archive-muted);
+}
+
+.private-detail__access-list{
+    margin:.8rem 0 0;
+    padding:0;
+    list-style:none;
+}
+
+.private-detail__access-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:1rem;
+    padding:.55rem 0;
+    border-bottom:1px solid var(--archive-line-weak);
+}
+
+.private-detail__access-name{
+    font-family:var(--serif);
+    font-size:1.05rem;
+}
+
+.private-detail__access-permission{
+    font-family:var(--sans);
+    font-size:9px;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--archive-muted-dim);
+}
+
+.private-detail__access .private-detail__action{ margin-top:1.1rem; }
+
+/* --------------------------------------------------------------------------
+   A confirmation, in the page rather than in a browser dialog
+   -------------------------------------------------------------------------- */
+.private-confirm{
+    margin:1.6rem 0 0;
+    padding:1.1rem 1.2rem;
+    border:1px solid var(--archive-line);
+    background:var(--archive-surface);
+}
+
+.private-confirm__question{
+    margin:0;
+    font-family:var(--serif);
+    font-size:1.15rem;
+}
+
+.private-confirm__note{
+    margin:.6rem 0 0;
+    max-width:44ch;
+    font-size:.9rem;
+    line-height:1.7;
+    color:var(--archive-muted);
+}
+
+.private-confirm__actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:1.4rem;
+    margin:1.1rem 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   Narrow screens: one column, the photograph first
+   -------------------------------------------------------------------------- */
+@media (max-width:860px){
+    .private-archive-object{ grid-template-columns:minmax(0, 1fr); }
+    .private-detail__nav{ display:none; }
+    .private__grid{ grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); }
+}
+
+
+/* --------------------------------------------------------------------------
+   While the page is asking whether the private archive is still open
+
+   A browser can restore this document from memory with its DOM intact — which
+   would mean private memories on the screen of a page whose ten minutes ran out
+   while it was away. The class is set in `pageshow`, which fires before the
+   restored page is painted, so nothing private is ever shown even for a frame.
+   -------------------------------------------------------------------------- */
+body.is-rechecking .private__head,
+body.is-rechecking .private__grid,
+body.is-rechecking .private__empty,
+body.is-rechecking .private__notice,
+body.is-rechecking .private-detail{
+    visibility:hidden;
+}

@@ -1,0 +1,187 @@
+/* ==========================================================================
+   LoveStory — design system
+   Shared by:  index.html            (Landing / Hero)
+               gallery/index.html    (Entrance / Memory Gallery)
+
+   Everything visual that both pages share lives here: colour, the two font
+   families, motion easings, the layer scale and film grain. The main story
+   page still owns its own stylesheet and is left untouched in this
+   iteration.
+   ========================================================================== */
+
+:root{
+    /* ======================================================================
+       The archive palette — one source of truth.
+
+       The Entrance and the Main Hub both read these, so the two pages cannot
+       drift apart. Everything on those pages is written in terms of these
+       names, never a raw hex.
+       ====================================================================== */
+    --archive-bg:#10110F;
+    --archive-surface:#171815;
+    --archive-surface-soft:#1D1E1A;
+    --archive-photo-frame:#20211E;
+
+    --archive-text:#E8E3D8;
+    --archive-muted:#98968E;
+    --archive-muted-dim:#6F706A;
+
+    --archive-gold:#B79A62;
+    --archive-gold-bright:#C8AD75;
+    --archive-gold-dark:#806C49;
+
+    --archive-line:rgba(232,227,216,.12);
+    --archive-line-weak:rgba(232,227,216,.06);
+    --archive-line-gold:rgba(200,173,117,.16);
+    --archive-danger:#A47C69;
+
+    /* --- Paper & ink (the light "archive" pages) ------------------------- */
+    --bg:#F3EFE7;
+    --bg-deep:#EAE5DA;
+    --dark:#111111;
+    --warm-white:#F5F1EB;
+    --soft-black:#171717;
+    --muted:#8B8883;
+
+    --ink:var(--dark);
+    --ink-soft:rgba(17,17,17,.62);
+    --ink-faint:rgba(17,17,17,.42);
+    --line:rgba(17,17,17,.16);
+    --line-strong:rgba(17,17,17,.38);
+
+    /* --- Type that sits on photography (the dark hero) ------------------- */
+    --text:rgba(245,241,235,.96);
+    --text-soft:rgba(245,241,235,.68);
+    --text-faint:rgba(245,241,235,.46);
+    --line-light:rgba(245,241,235,.28);
+    --line-light-strong:rgba(245,241,235,.6);
+
+    --accent:#B88773;
+    --danger:#9C5A46;
+
+    /* --- Film ------------------------------------------------------------ */
+    /* Soft charcoal rather than pure black, and a light touch of
+       perforation, so the mount never out-weighs the photograph. */
+    --film:#1B1A18;
+    --perf:rgba(245,241,235,.16);
+
+    /* --- Type -------------------------------------------------------------
+       Exactly two families: an editorial serif for display, one clean sans
+       for navigation, captions and UI. Webfonts are linked in the HTML with
+       a system fallback, so the site still works offline.
+       -------------------------------------------------------------------- */
+    --serif:"Cormorant Garamond","Iowan Old Style","Palatino Linotype",Palatino,
+            Georgia,"Songti SC","Times New Roman",serif;
+    --sans:"Inter","Segoe UI","Helvetica Neue",Helvetica,Arial,
+           "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+
+    /* Back-compat aliases: older rules reference these names. */
+    --font-display:var(--serif);
+    --font-sans:var(--sans);
+    --paper:var(--bg);
+    --on-dark:var(--text);
+    --on-dark-muted:var(--text-soft);
+    --film-frame:var(--film);
+    --paper-line:var(--line);
+    --warm-accent:var(--accent);
+    --muted-grey:var(--muted);
+
+    /* --- Motion ---------------------------------------------------------- */
+    --ease-out:cubic-bezier(.22,.61,.36,1);
+    --ease-soft:var(--ease-out);
+    --ease-inout:cubic-bezier(.65,.05,.36,1);
+
+    /* --- Depth: one shared layer scale ----------------------------------- */
+    --z-media:0;
+    --z-strip-back:1;
+    --z-strip-mid:2;
+    --z-strip-front:3;
+    --z-title:4;
+    --z-ui:5;
+    --z-grain:40;
+    --z-modal:500;
+
+    --radius-sm:6px;
+    --radius-pill:999px;
+}
+
+/* ==========================================================================
+   Base reset
+   ========================================================================== */
+*,
+*::before,
+*::after{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+    -webkit-text-size-adjust:100%;
+}
+
+body{
+    margin:0;
+    font-family:var(--sans);
+    color:var(--ink);
+    background:var(--bg);
+}
+
+img{
+    display:block;
+    max-width:100%;
+}
+
+button{
+    font-family:inherit;
+}
+
+/* One rule for everything clickable, so interactive elements always read as
+   interactive. The system pointer is used everywhere — no custom cursor. */
+a[href],
+button,
+[role="button"]{
+    cursor:pointer;
+}
+
+:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+}
+
+/* ==========================================================================
+   Shared micro-typography
+   The small uppercase, widely spaced labels used across the whole site.
+   ========================================================================== */
+.micro{
+    font-family:var(--sans);
+    font-size:10px;
+    font-weight:400;
+    line-height:1.5;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+}
+
+/* ==========================================================================
+   Film grain — part of the site's visual identity
+   A single fixed, non-interactive overlay. Desaturated SVG noise at ~5%,
+   subtle enough to read as texture rather than dots.
+   ========================================================================== */
+.grain{
+    position:fixed;
+    inset:0;
+    z-index:var(--z-grain);
+    pointer-events:none;
+    opacity:.05;
+    background-image:url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url(%23g)'/></svg>");
+    background-size:180px 180px;
+    background-repeat:repeat;
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce){
+    html{
+        scroll-behavior:auto;
+    }
+}
